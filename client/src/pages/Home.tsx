@@ -133,7 +133,9 @@ export default function Home() {
 
     // Spin animation
     const spins = 5 + Math.random() * 3; // 5-8 full rotations
-    const extraDegrees = newSpinCount < 3 ? 45 : 180; // Lose segment or Win segment
+    // First 2 spins: land on red (bottom half, 270 degrees)
+    // 3rd spin: land on green (top half, 90 degrees)
+    const extraDegrees = newSpinCount < 3 ? 270 : 90;
     const totalRotation = wheelRotation + (360 * spins) + extraDegrees;
     
     setWheelRotation(totalRotation);
@@ -470,18 +472,20 @@ export default function Home() {
                 className="w-full h-full rounded-full border-8 border-[oklch(0.75_0.15_85)] relative overflow-hidden transition-transform duration-[3000ms] ease-out"
                 style={{ transform: `rotate(${wheelRotation}deg)` }}
               >
-                {/* Win segment (top half) */}
-                <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.50_0.20_120)] to-[oklch(0.40_0.18_120)]" style={{ clipPath: 'polygon(50% 50%, 0% 0%, 100% 0%)' }}>
-                  <div className="absolute top-1/4 left-1/2 -translate-x-1/2 text-white font-bold text-lg">
-                    VOITTO!
+                {/* Green segment (top half) - Message sent */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.55_0.20_145)] to-[oklch(0.45_0.18_145)]" style={{ clipPath: 'polygon(50% 50%, 0% 0%, 100% 0%)' }}>
+                  <div className="absolute top-[30%] left-1/2 -translate-x-1/2 text-white font-bold text-base sm:text-lg text-center px-2">
+                    Viesti<br/>lähetetään
                   </div>
                 </div>
-                {/* Lose segment (bottom half) */}
-                <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.40_0.20_20)] to-[oklch(0.30_0.18_20)]" style={{ clipPath: 'polygon(50% 50%, 0% 100%, 100% 100%)' }}>
-                  <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 text-white font-bold text-lg">
-                    EI VOITTOA
+                {/* Red segment (bottom half) - Message not sent */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.45_0.22_25)] to-[oklch(0.35_0.20_25)]" style={{ clipPath: 'polygon(50% 50%, 0% 100%, 100% 100%)' }}>
+                  <div className="absolute bottom-[30%] left-1/2 -translate-x-1/2 text-white font-bold text-base sm:text-lg text-center px-2">
+                    Viestiäsi ei<br/>lähetetä
                   </div>
                 </div>
+                {/* Center divider line */}
+                <div className="absolute top-1/2 left-0 right-0 h-1 bg-[oklch(0.75_0.15_85)]"></div>
               </div>
               
               {/* Pointer */}
