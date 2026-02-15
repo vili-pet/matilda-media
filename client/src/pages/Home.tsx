@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 /**
  * Matilda Media - Casino-themed media production website
@@ -11,7 +15,6 @@ export default function Home() {
   const [isAnimating, setIsAnimating] = useState(true);
   const targetViews = 18000000;
   const animationDuration = 180000; // 3 minutes in milliseconds
-  const tickRate = 2; // views per second after animation
 
   // Live countdown state
   const [timeLeft, setTimeLeft] = useState({
@@ -21,8 +24,15 @@ export default function Home() {
     seconds: 0
   });
 
+  // Contact form state
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: ""
+  });
+
   useEffect(() => {
-    // Animate view counter to 18M over 3 minutes
+    // Animate view counter from 0 to 18M over 3 minutes
     const startTime = Date.now();
     const animationTimer = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -43,17 +53,23 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // After animation, tick at 2 views per second
+    // After animation, tick irregularly
     if (!isAnimating) {
-      const tickTimer = setInterval(() => {
-        setViewCount(prev => prev + tickRate);
-      }, 1000);
+      const irregularTick = () => {
+        // Random increment between 1-5
+        const increment = Math.floor(Math.random() * 5) + 1;
+        setViewCount(prev => prev + increment);
+        
+        // Random delay between 1-4 seconds
+        const delay = (Math.floor(Math.random() * 4) + 1) * 1000;
+        setTimeout(irregularTick, delay);
+      };
 
-      return () => clearInterval(tickTimer);
+      irregularTick();
     }
   }, [isAnimating]);
 
-  // Live countdown to July 1, 2027
+  // Live countdown to July 1, 2027 00:00
   useEffect(() => {
     const calculateTimeLeft = () => {
       const targetDate = new Date('2027-07-01T00:00:00').getTime();
@@ -84,15 +100,43 @@ export default function Home() {
     return num.toString().padStart(2, '0');
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Create mailto link
+    const subject = encodeURIComponent(`Yhteydenotto: ${formData.name}`);
+    const body = encodeURIComponent(`Nimi: ${formData.name}\nSähköposti: ${formData.email}\n\nViesti:\n${formData.message}`);
+    window.location.href = `mailto:vili@matilda.media?subject=${subject}&body=${body}`;
+    
+    toast.success("Sähköpostiohjelma avataan...");
+    
+    // Reset form
+    setFormData({ name: "", email: "", message: "" });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[oklch(0.12_0.03_250)] to-[oklch(0.08_0.02_250)]">
       {/* Hero Section */}
       <section className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden">
-        {/* Subtle animated background pattern */}
+        {/* Enhanced animated background patterns */}
         <div className="absolute inset-0 opacity-5">
+          {/* Spinning squares */}
           <div className="absolute top-20 left-10 w-32 h-32 border-2 border-[oklch(0.75_0.15_85)] rotate-45 animate-spin-slow"></div>
-          <div className="absolute bottom-40 right-20 w-24 h-24 border-2 border-[oklch(0.75_0.15_85)] rotate-12 animate-pulse-slow"></div>
+          <div className="absolute top-40 right-32 w-24 h-24 border-2 border-[oklch(0.75_0.15_85)] rotate-12 animate-spin-reverse"></div>
+          <div className="absolute bottom-40 right-20 w-28 h-28 border-2 border-[oklch(0.75_0.15_85)] -rotate-12 animate-pulse-slow"></div>
+          <div className="absolute bottom-60 left-40 w-20 h-20 border-2 border-[oklch(0.75_0.15_85)] rotate-45 animate-spin-slow"></div>
+          
+          {/* Bouncing elements */}
           <div className="absolute top-1/2 left-1/4 w-16 h-16 border-2 border-[oklch(0.75_0.15_85)] -rotate-12 animate-bounce-slow"></div>
+          <div className="absolute top-1/3 right-1/4 w-20 h-20 border-2 border-[oklch(0.75_0.15_85)] rotate-45 animate-bounce-slow"></div>
+          
+          {/* Circles */}
+          <div className="absolute top-1/4 left-1/3 w-24 h-24 border-2 border-[oklch(0.75_0.15_85)] rounded-full animate-pulse-slow"></div>
+          <div className="absolute bottom-1/4 right-1/3 w-32 h-32 border-2 border-[oklch(0.75_0.15_85)] rounded-full animate-pulse-slow"></div>
+          
+          {/* Diamonds */}
+          <div className="absolute top-2/3 left-1/2 w-20 h-20 border-2 border-[oklch(0.75_0.15_85)] rotate-45 animate-float"></div>
+          <div className="absolute top-1/5 right-1/5 w-16 h-16 border-2 border-[oklch(0.75_0.15_85)] rotate-45 animate-float"></div>
         </div>
 
         <div className="text-center z-10 max-w-4xl w-full">
@@ -104,7 +148,7 @@ export default function Home() {
             Pelin säännöt sanelevat sisällön
           </p>
 
-          {/* View Counter - Smaller and more responsive */}
+          {/* View Counter */}
           <div className="mb-12 sm:mb-16 animate-fade-in-delay-2 px-4">
             <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-3 tabular-nums transition-all duration-300">
               {formatNumber(viewCount)}
@@ -124,7 +168,7 @@ export default function Home() {
           </h2>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 md:gap-12">
-            {/* Podcasts - Purple/Violet theme */}
+            {/* Podcasts */}
             <div className="text-center group cursor-pointer">
               <div className="mb-6 relative">
                 <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto rounded-2xl flex items-center justify-center 
@@ -145,7 +189,7 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Clips - Red/Crimson theme */}
+            {/* Clips */}
             <div className="text-center group cursor-pointer">
               <div className="mb-6 relative">
                 <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto rounded-2xl flex items-center justify-center 
@@ -167,7 +211,7 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Content - Teal/Cyan theme */}
+            {/* Content */}
             <div className="text-center group cursor-pointer sm:col-span-2 lg:col-span-1">
               <div className="mb-6 relative">
                 <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto rounded-2xl flex items-center justify-center 
@@ -194,11 +238,15 @@ export default function Home() {
       {/* Countdown Section */}
       <section className="py-16 sm:py-20 md:py-24 px-4 bg-gradient-to-b from-transparent to-[oklch(0.15_0.04_250)]">
         <div className="container max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 text-[oklch(0.75_0.15_85)]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 text-[oklch(0.75_0.15_85)]">
             Peli alkaa pian...
           </h2>
           
-          {/* Live Countdown Grid - Responsive */}
+          <p className="text-base sm:text-lg md:text-xl text-[oklch(0.65_0.03_85)] font-light mb-8 sm:mb-10 px-4">
+            Uusi jako alkaa <span className="text-[oklch(0.75_0.15_85)] font-semibold">1. heinäkuuta 2027 klo 00:00</span>
+          </p>
+          
+          {/* Live Countdown Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-8 max-w-3xl mx-auto">
             {/* Days */}
             <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-3 sm:p-4 md:p-6 
@@ -245,26 +293,75 @@ export default function Home() {
             </div>
           </div>
 
-          <p className="text-base sm:text-lg md:text-xl text-[oklch(0.65_0.03_85)] font-light mb-3 sm:mb-4 px-4">
-            Uusi jako alkaa 07/2027
-          </p>
           <p className="text-sm sm:text-base text-[oklch(0.55_0.03_85)] font-light italic px-4">
             Oletko valmis?
           </p>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-10 sm:py-12 px-4 border-t border-[oklch(0.75_0.15_85)]/20">
-        <div className="container max-w-5xl mx-auto text-center">
-          <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[oklch(0.75_0.15_85)] transition-all duration-300 hover:scale-105">
+      {/* Contact Section */}
+      <section className="py-16 sm:py-20 md:py-24 px-4 border-t border-[oklch(0.75_0.15_85)]/20">
+        <div className="container max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-4 sm:mb-6 text-[oklch(0.75_0.15_85)]">
             Yhteys jakajaan
-          </h3>
-          <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] transition-all duration-300 hover:text-[oklch(0.75_0.03_85)]">
+          </h2>
+          
+          <p className="text-center text-base sm:text-lg text-[oklch(0.65_0.03_85)] mb-8 sm:mb-12">
+            Ota yhteyttä sähköpostitse: <a href="mailto:vili@matilda.media" className="text-[oklch(0.75_0.15_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors underline">vili@matilda.media</a>
+          </p>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <Input
+                type="text"
+                placeholder="Nimi"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+                className="bg-[oklch(0.18_0.04_250)] border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.85_0.03_85)] placeholder:text-[oklch(0.55_0.03_85)]
+                         focus:border-[oklch(0.75_0.15_85)] focus:ring-[oklch(0.75_0.15_85)]"
+              />
+            </div>
+            
+            <div>
+              <Input
+                type="email"
+                placeholder="Sähköposti"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+                className="bg-[oklch(0.18_0.04_250)] border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.85_0.03_85)] placeholder:text-[oklch(0.55_0.03_85)]
+                         focus:border-[oklch(0.75_0.15_85)] focus:ring-[oklch(0.75_0.15_85)]"
+              />
+            </div>
+            
+            <div>
+              <Textarea
+                placeholder="Viesti"
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                required
+                rows={5}
+                className="bg-[oklch(0.18_0.04_250)] border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.85_0.03_85)] placeholder:text-[oklch(0.55_0.03_85)]
+                         focus:border-[oklch(0.75_0.15_85)] focus:ring-[oklch(0.75_0.15_85)] resize-none"
+              />
+            </div>
+            
+            <Button
+              type="submit"
+              className="w-full bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] 
+                       transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(212,175,55,0.4)]
+                       font-semibold text-lg py-6"
+            >
+              Lähetä viesti
+            </Button>
+          </form>
+
+          <p className="text-center text-sm text-[oklch(0.55_0.03_85)] mt-8">
             Matilda Media – Lappeenranta, Suomi
           </p>
         </div>
-      </footer>
+      </section>
     </div>
   );
 }
