@@ -1,25 +1,168 @@
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+import { useEffect, useState } from "react";
 
 /**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Best Practices, Design Guide and Common Pitfalls
+ * Matilda Media - Casino-themed media production website
+ * Design: Simple, elegant dark blue and gold aesthetic
+ * Focus: Content over decoration
  */
 export default function Home() {
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
+  const [viewCount, setViewCount] = useState(0);
+  const targetViews = 18000000;
+
+  useEffect(() => {
+    // Animate view counter on load
+    const duration = 2000;
+    const steps = 60;
+    const increment = targetViews / steps;
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= targetViews) {
+        setViewCount(targetViews);
+        clearInterval(timer);
+      } else {
+        setViewCount(Math.floor(current));
+      }
+    }, duration / steps);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatNumber = (num: number) => {
+    return num.toLocaleString('fi-FI');
+  };
+
+  // Calculate days until July 1, 2027
+  const targetDate = new Date('2027-07-01T00:00:00');
+  const now = new Date();
+  const daysUntil = Math.ceil((targetDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
+    <div className="min-h-screen bg-gradient-to-b from-[oklch(0.12_0.03_250)] to-[oklch(0.08_0.02_250)]">
+      {/* Hero Section */}
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-10 w-32 h-32 border-2 border-[oklch(0.75_0.15_85)] rotate-45"></div>
+          <div className="absolute bottom-40 right-20 w-24 h-24 border-2 border-[oklch(0.75_0.15_85)] rotate-12"></div>
+          <div className="absolute top-1/2 left-1/4 w-16 h-16 border-2 border-[oklch(0.75_0.15_85)] -rotate-12"></div>
+        </div>
+
+        <div className="text-center z-10 max-w-4xl">
+          <h1 className="text-6xl md:text-8xl font-bold mb-6 gold-gradient">
+            MATILDA MEDIA
+          </h1>
+          
+          <p className="text-2xl md:text-3xl text-[oklch(0.75_0.15_85)] mb-12 font-light tracking-wide">
+            Pelin säännöt sanelevat sisällön
+          </p>
+
+          {/* View Counter */}
+          <div className="mb-16">
+            <div className="text-6xl md:text-7xl font-bold text-[oklch(0.75_0.15_85)] mb-4 tabular-nums">
+              {formatNumber(viewCount)}
+            </div>
+            <div className="text-lg md:text-xl text-[oklch(0.65_0.03_85)] font-light">
+              Orgaanista näyttökertaa
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section className="py-24 px-4">
+        <div className="container max-w-5xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-[oklch(0.75_0.15_85)]">
+            Pöydän antimet
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-12">
+            {/* Podcasts */}
+            <div className="text-center group">
+              <div className="mb-6 relative">
+                <div className="w-24 h-24 mx-auto border-2 border-[oklch(0.75_0.15_85)] rounded-full flex items-center justify-center group-hover:bg-[oklch(0.75_0.15_85)]/10 transition-all duration-300">
+                  <svg className="w-12 h-12 text-[oklch(0.75_0.15_85)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-[oklch(0.85_0.15_85)]">Podcastit</h3>
+              <p className="text-[oklch(0.65_0.03_85)] font-light">
+                Ääni, joka kantaa – strategiset siirrot podcasteina
+              </p>
+            </div>
+
+            {/* Clips */}
+            <div className="text-center group">
+              <div className="mb-6 relative">
+                <div className="w-24 h-24 mx-auto border-2 border-[oklch(0.75_0.15_85)] rounded-full flex items-center justify-center group-hover:bg-[oklch(0.75_0.15_85)]/10 transition-all duration-300">
+                  <svg className="w-12 h-12 text-[oklch(0.75_0.15_85)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-[oklch(0.85_0.15_85)]">Klipit</h3>
+              <p className="text-[oklch(0.65_0.03_85)] font-light">
+                Nopeat voitot – iskevät klipit, jotka jäävät mieleen
+              </p>
+            </div>
+
+            {/* Content */}
+            <div className="text-center group">
+              <div className="mb-6 relative">
+                <div className="w-24 h-24 mx-auto border-2 border-[oklch(0.75_0.15_85)] rounded-full flex items-center justify-center group-hover:bg-[oklch(0.75_0.15_85)]/10 transition-all duration-300">
+                  <svg className="w-12 h-12 text-[oklch(0.75_0.15_85)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-[oklch(0.85_0.15_85)]">Muu sisältö</h3>
+              <p className="text-[oklch(0.65_0.03_85)] font-light">
+                Jokeri hihassa – luovat ratkaisut kaikkiin mediatarpeisiin
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Countdown Section */}
+      <section className="py-24 px-4 bg-gradient-to-b from-transparent to-[oklch(0.15_0.04_250)]">
+        <div className="container max-w-3xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-8 text-[oklch(0.75_0.15_85)]">
+            Peli alkaa pian...
+          </h2>
+          
+          <div className="mb-8">
+            <div className="text-7xl md:text-8xl font-bold text-[oklch(0.75_0.15_85)] mb-4 tabular-nums">
+              {daysUntil}
+            </div>
+            <div className="text-xl md:text-2xl text-[oklch(0.65_0.03_85)] font-light">
+              päivää jäljellä
+            </div>
+          </div>
+
+          <p className="text-lg md:text-xl text-[oklch(0.65_0.03_85)] font-light mb-4">
+            Uusi jako alkaa 07/2027
+          </p>
+          <p className="text-md text-[oklch(0.55_0.03_85)] font-light italic">
+            Oletko valmis?
+          </p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 px-4 border-t border-[oklch(0.75_0.15_85)]/20">
+        <div className="container max-w-5xl mx-auto text-center">
+          <h3 className="text-2xl font-bold mb-4 text-[oklch(0.75_0.15_85)]">
+            Yhteys jakajaan
+          </h3>
+          <p className="text-[oklch(0.65_0.03_85)]">
+            Matilda Media – Lappeenranta, Suomi
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
