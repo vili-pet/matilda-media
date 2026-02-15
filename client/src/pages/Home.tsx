@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,50 +6,187 @@ import { toast } from "sonner";
 
 /**
  * Matilda Media - Casino-themed media production website
- * Design: Simple, elegant dark blue and gold aesthetic with smooth animations
- * Focus: Content over decoration with dynamic interactions
- * Mobile-first responsive design
+ * Design: Dark blue and gold casino aesthetic
+ * Features: Animated coin flip, slot machine captcha, confetti
  */
+
+// Slot symbols
+const SLOT_SYMBOLS = ['🍒', '🔔', '💎', 'BAR', '⭐', '🍋'];
+const WIN_SYMBOL = '7';
+
+// Confetti component
+function Confetti({ active }: { active: boolean }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  
+  useEffect(() => {
+    if (!active || !canvasRef.current) return;
+    
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const particles: Array<{
+      x: number; y: number; vx: number; vy: number;
+      color: string; size: number; rotation: number; rotationSpeed: number;
+    }> = [];
+    
+    const colors = ['#D4AF37', '#FFD700', '#B8860B', '#DAA520', '#F0E68C', '#FF6B6B', '#4ECDC4'];
+    
+    for (let i = 0; i < 150; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * 200,
+        vx: (Math.random() - 0.5) * 6,
+        vy: Math.random() * 3 + 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: Math.random() * 8 + 4,
+        rotation: Math.random() * 360,
+        rotationSpeed: (Math.random() - 0.5) * 10,
+      });
+    }
+    
+    let animationId: number;
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      let allDone = true;
+      particles.forEach(p => {
+        if (p.y < canvas.height + 50) allDone = false;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.05;
+        p.rotation += p.rotationSpeed;
+        
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        ctx.restore();
+      });
+      
+      if (!allDone) {
+        animationId = requestAnimationFrame(animate);
+      }
+    };
+    
+    animate();
+    return () => cancelAnimationFrame(animationId);
+  }, [active]);
+  
+  if (!active) return null;
+  
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none z-[100]"
+    />
+  );
+}
+
+// Slot Reel component
+function SlotReel({ 
+  spinning, 
+  finalSymbol, 
+  delay,
+  isWin
+}: { 
+  spinning: boolean; 
+  finalSymbol: string; 
+  delay: number;
+  isWin: boolean;
+}) {
+  const [displaySymbol, setDisplaySymbol] = useState('?');
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [stopped, setStopped] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  
+  useEffect(() => {
+    if (spinning) {
+      setStopped(false);
+      setIsSpinning(true);
+      
+      // Rapidly cycle through symbols
+      intervalRef.current = setInterval(() => {
+        const allSymbols = [...SLOT_SYMBOLS, WIN_SYMBOL];
+        setDisplaySymbol(allSymbols[Math.floor(Math.random() * allSymbols.length)]);
+      }, 80);
+      
+      // Stop after delay
+      setTimeout(() => {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        setDisplaySymbol(finalSymbol);
+        setIsSpinning(false);
+        setStopped(true);
+      }, delay);
+    }
+    
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [spinning, finalSymbol, delay]);
+  
+  return (
+    <div className={`
+      w-20 h-24 sm:w-24 sm:h-28 md:w-28 md:h-32 
+      bg-[oklch(0.10_0.02_250)] 
+      border-2 rounded-lg
+      flex items-center justify-center
+      transition-all duration-300
+      ${stopped && isWin ? 'border-[oklch(0.60_0.25_25)] shadow-[0_0_20px_rgba(220,20,60,0.5)]' : 'border-[oklch(0.75_0.15_85)]/50'}
+      ${isSpinning ? 'animate-pulse' : ''}
+    `}>
+      <span className={`
+        text-3xl sm:text-4xl md:text-5xl font-bold select-none
+        ${stopped && finalSymbol === WIN_SYMBOL ? 'text-red-500' : 'text-[oklch(0.75_0.15_85)]'}
+        ${isSpinning ? 'blur-[1px]' : ''}
+        transition-all duration-200
+      `}>
+        {displaySymbol}
+      </span>
+    </div>
+  );
+}
+
 export default function Home() {
   const [viewCount, setViewCount] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
   const targetViews = 22000000;
-  const animationDuration = 360000; // 6 minutes in milliseconds
+  const animationDuration = 360000; // 6 minutes
 
   // Live countdown state
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0
-  });
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   // Contact form state
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: ""
-  });
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 
-  // Email reveal state
-  const [emailRevealed, setEmailRevealed] = useState(false);
+  // Coin flip state
   const [coinFlipping, setCoinFlipping] = useState(false);
+  const [coinPhase, setCoinPhase] = useState<'idle' | 'flipping' | 'landing' | 'done'>('idle');
 
-  // Wheel of fortune state
-  const [showWheel, setShowWheel] = useState(false);
-  const [spinning, setSpinning] = useState(false);
+  // Slot machine state
+  const [showSlot, setShowSlot] = useState(false);
+  const [slotSpinning, setSlotSpinning] = useState(false);
   const [spinCount, setSpinCount] = useState(0);
-  const [wheelRotation, setWheelRotation] = useState(0);
+  const [reelSymbols, setReelSymbols] = useState(['?', '?', '?']);
+  const [slotWon, setSlotWon] = useState(false);
 
+  // Confetti state
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  // Email revealed state
+  const [emailRevealed, setEmailRevealed] = useState(false);
+
+  // View counter animation
   useEffect(() => {
-    // Animate view counter from 0 to 22M over 6 minutes
     const startTime = Date.now();
     const animationTimer = setInterval(() => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
-      
       if (progress < 1) {
-        // Smooth easing function for the animation
         const easeOutQuart = 1 - Math.pow(1 - progress, 4);
         setViewCount(Math.floor(targetViews * easeOutQuart));
       } else {
@@ -58,34 +195,30 @@ export default function Home() {
         clearInterval(animationTimer);
       }
     }, 50);
-
     return () => clearInterval(animationTimer);
   }, []);
 
+  // Irregular ticking after animation
   useEffect(() => {
-    // After animation, tick irregularly
     if (!isAnimating) {
+      let timeoutId: ReturnType<typeof setTimeout>;
       const irregularTick = () => {
-        // Random increment between 1-5
         const increment = Math.floor(Math.random() * 5) + 1;
         setViewCount(prev => prev + increment);
-        
-        // Random delay between 1-4 seconds
         const delay = (Math.floor(Math.random() * 4) + 1) * 1000;
-        setTimeout(irregularTick, delay);
+        timeoutId = setTimeout(irregularTick, delay);
       };
-
       irregularTick();
+      return () => clearTimeout(timeoutId);
     }
   }, [isAnimating]);
 
-  // Live countdown to July 1, 2027 00:00
+  // Live countdown
   useEffect(() => {
     const calculateTimeLeft = () => {
       const targetDate = new Date('2027-07-01T00:00:00').getTime();
       const now = new Date().getTime();
       const difference = targetDate - now;
-
       if (difference > 0) {
         setTimeLeft({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -95,115 +228,120 @@ export default function Home() {
         });
       }
     };
-
     calculateTimeLeft();
     const countdownTimer = setInterval(calculateTimeLeft, 1000);
-
     return () => clearInterval(countdownTimer);
   }, []);
 
-  const formatNumber = (num: number) => {
-    return num.toLocaleString('fi-FI');
-  };
+  const formatNumber = (num: number) => num.toLocaleString('fi-FI');
+  const padZero = (num: number) => num.toString().padStart(2, '0');
 
-  const padZero = (num: number) => {
-    return num.toString().padStart(2, '0');
-  };
-
+  // Coin flip handler
   const handleCoinFlip = () => {
+    if (coinPhase !== 'idle') return;
     setCoinFlipping(true);
-    setTimeout(() => {
-      setEmailRevealed(true);
-      setCoinFlipping(false);
-      toast.success("Voitit! Sähköpostiosoite paljastettu 🎰");
-    }, 1000);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setShowWheel(true);
-  };
-
-  const spinWheel = () => {
-    if (spinning) return;
+    setCoinPhase('flipping');
     
-    setSpinning(true);
+    // After 2 seconds of spinning, start landing
+    setTimeout(() => {
+      setCoinPhase('landing');
+    }, 2000);
+    
+    // After 2.5 seconds, show result
+    setTimeout(() => {
+      setCoinPhase('done');
+      setCoinFlipping(false);
+      // Don't reveal email yet - need to win slot machine
+      setShowSlot(true);
+    }, 2800);
+  };
+
+  // Slot machine spin handler
+  const handleSlotSpin = useCallback(() => {
+    if (slotSpinning) return;
+    
+    setSlotSpinning(true);
     const newSpinCount = spinCount + 1;
     setSpinCount(newSpinCount);
-
-    // Spin animation
-    const spins = 5 + Math.random() * 3; // 5-8 full rotations
-    // First 2 spins: land on red (bottom half, 270 degrees)
-    // 3rd spin: land on green (top half, 90 degrees)
-    const extraDegrees = newSpinCount < 3 ? 270 : 90;
-    const totalRotation = wheelRotation + (360 * spins) + extraDegrees;
     
-    setWheelRotation(totalRotation);
-
+    let symbols: string[];
+    if (newSpinCount < 3) {
+      // First two spins: random losing combinations (no triple 7s)
+      const losingSets = [
+        ['🍒', '🔔', '💎'],
+        ['BAR', '⭐', '🍋'],
+        ['🔔', '🍒', 'BAR'],
+        ['💎', '🍋', '⭐'],
+        ['🍋', 'BAR', '🔔'],
+      ];
+      symbols = losingSets[Math.floor(Math.random() * losingSets.length)];
+    } else {
+      // Third spin: triple red 7s!
+      symbols = [WIN_SYMBOL, WIN_SYMBOL, WIN_SYMBOL];
+    }
+    
+    setReelSymbols(symbols);
+    
+    // Wait for all reels to stop (last reel stops at 2.4s)
     setTimeout(() => {
-      setSpinning(false);
+      setSlotSpinning(false);
       
       if (newSpinCount < 3) {
-        // First two spins always lose
-        toast.error("Ei voittoa! Yritä uudelleen 🎰", {
-          duration: 3000,
-        });
+        toast.error("Ei tärpännyt! Kokeile uudelleen 🎰", { duration: 3000 });
       } else {
-        // Third spin always wins
-        toast.success("Onneksi olkoon, voitit! 🎉", {
-          duration: 3000,
-        });
+        // WIN!
+        setSlotWon(true);
+        setShowConfetti(true);
+        setEmailRevealed(true);
         
-        setTimeout(() => {
-          // Create mailto link
-          const subject = encodeURIComponent(`Yhteydenotto: ${formData.name}`);
-          const body = encodeURIComponent(`Nimi: ${formData.name}\nSähköposti: ${formData.email}\n\nViesti:\n${formData.message}`);
-          window.location.href = `mailto:vili@matilda.media?subject=${subject}&body=${body}`;
-          
-          toast.success("Talletuksesi on saatu. Olen sinuun yhteydessä 1–37 arkipäivän kuluessa.", {
-            duration: 5000,
-          });
-          
-          // Reset form and wheel
-          setFormData({ name: "", email: "", message: "" });
-          setShowWheel(false);
-          setSpinCount(0);
-          setWheelRotation(0);
-        }, 1500);
+        toast.success("🎰 7 7 7 – JACKPOT! Sähköposti paljastettu!", { duration: 5000 });
+        
+        // Hide confetti after 5 seconds
+        setTimeout(() => setShowConfetti(false), 5000);
+        
+        // Close slot after 3 seconds
+        setTimeout(() => setShowSlot(false), 3000);
       }
-    }, 3000);
+    }, 2600);
+  }, [slotSpinning, spinCount]);
+
+  // Form submit handler
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const subject = encodeURIComponent(`Yhteydenotto: ${formData.name}`);
+    const body = encodeURIComponent(`Nimi: ${formData.name}\nSähköposti: ${formData.email}\n\nViesti:\n${formData.message}`);
+    window.location.href = `mailto:vili@matilda.media?subject=${subject}&body=${body}`;
+    
+    toast.success("Talletuksesi on saatu. Olen sinuun yhteydessä 1–37 arkipäivän kuluessa.", {
+      duration: 6000,
+    });
+    
+    setFormData({ name: "", email: "", message: "" });
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[oklch(0.12_0.03_250)] to-[oklch(0.08_0.02_250)]">
+      {/* Confetti overlay */}
+      <Confetti active={showConfetti} />
+
       {/* Hero Section */}
       <section className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden">
         {/* Casino slot symbols background - faded */}
         <div className="absolute inset-0 opacity-[0.03] text-[oklch(0.75_0.15_85)]">
-          {/* Seven symbols */}
           <div className="absolute top-20 left-10 text-6xl font-bold animate-spin-slow">7</div>
           <div className="absolute top-1/4 right-20 text-7xl font-bold animate-pulse-slow">7</div>
           <div className="absolute bottom-1/3 left-1/4 text-5xl font-bold animate-float">7</div>
-          
-          {/* BAR text */}
           <div className="absolute top-1/3 left-1/3 text-4xl font-bold tracking-wider animate-bounce-slow">BAR</div>
           <div className="absolute bottom-1/4 right-1/3 text-5xl font-bold tracking-wider animate-pulse-slow">BAR</div>
-          
-          {/* Cherry symbols (using emoji) */}
           <div className="absolute top-1/2 right-1/4 text-6xl animate-spin-reverse">🍒</div>
           <div className="absolute bottom-40 left-20 text-5xl animate-float">🍒</div>
-          
-          {/* Diamond symbols */}
           <div className="absolute top-40 right-40 text-6xl animate-pulse-slow">💎</div>
-          <div className="absolute bottom-1/2 left-1/5 text-5xl animate-spin-slow">💎</div>
-          
-          {/* Bell symbols */}
-          <div className="absolute top-2/3 right-1/5 text-5xl animate-bounce-slow">🔔</div>
-          <div className="absolute top-1/5 left-2/5 text-4xl animate-float">🔔</div>
-          
-          {/* Star symbols */}
-          <div className="absolute bottom-1/5 right-2/5 text-6xl animate-spin-reverse">⭐</div>
-          <div className="absolute top-1/6 right-1/6 text-5xl animate-pulse-slow">⭐</div>
+          <div className="absolute bottom-1/2 left-[20%] text-5xl animate-spin-slow">💎</div>
+          <div className="absolute top-2/3 right-[20%] text-5xl animate-bounce-slow">🔔</div>
+          <div className="absolute top-[20%] left-[40%] text-4xl animate-float">🔔</div>
+          <div className="absolute bottom-[20%] right-[40%] text-6xl animate-spin-reverse">⭐</div>
+          <div className="absolute top-[16%] right-[16%] text-5xl animate-pulse-slow">⭐</div>
         </div>
 
         <div className="text-center z-10 max-w-4xl w-full">
@@ -334,42 +472,22 @@ export default function Home() {
             Uusi jako alkaa <span className="text-[oklch(0.65_0.03_85)]">1. heinäkuuta 2027 klo 00:00</span>
           </p>
           
-          {/* Live Countdown Grid */}
           <div className="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-6 max-w-2xl mx-auto">
             <div className="bg-[oklch(0.18_0.04_250)]/50 border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:border-[oklch(0.75_0.15_85)]/30">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[oklch(0.65_0.03_85)] mb-1 tabular-nums">
-                {timeLeft.days}
-              </div>
-              <div className="text-xs text-[oklch(0.55_0.03_85)] font-light uppercase tracking-wider">
-                Päivää
-              </div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[oklch(0.65_0.03_85)] mb-1 tabular-nums">{timeLeft.days}</div>
+              <div className="text-xs text-[oklch(0.55_0.03_85)] font-light uppercase tracking-wider">Päivää</div>
             </div>
-
             <div className="bg-[oklch(0.18_0.04_250)]/50 border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:border-[oklch(0.75_0.15_85)]/30">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[oklch(0.65_0.03_85)] mb-1 tabular-nums">
-                {padZero(timeLeft.hours)}
-              </div>
-              <div className="text-xs text-[oklch(0.55_0.03_85)] font-light uppercase tracking-wider">
-                Tuntia
-              </div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[oklch(0.65_0.03_85)] mb-1 tabular-nums">{padZero(timeLeft.hours)}</div>
+              <div className="text-xs text-[oklch(0.55_0.03_85)] font-light uppercase tracking-wider">Tuntia</div>
             </div>
-
             <div className="bg-[oklch(0.18_0.04_250)]/50 border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:border-[oklch(0.75_0.15_85)]/30">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[oklch(0.65_0.03_85)] mb-1 tabular-nums">
-                {padZero(timeLeft.minutes)}
-              </div>
-              <div className="text-xs text-[oklch(0.55_0.03_85)] font-light uppercase tracking-wider">
-                Min
-              </div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[oklch(0.65_0.03_85)] mb-1 tabular-nums">{padZero(timeLeft.minutes)}</div>
+              <div className="text-xs text-[oklch(0.55_0.03_85)] font-light uppercase tracking-wider">Min</div>
             </div>
-
             <div className="bg-[oklch(0.18_0.04_250)]/50 border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:border-[oklch(0.75_0.15_85)]/30">
-              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[oklch(0.65_0.03_85)] mb-1 tabular-nums">
-                {padZero(timeLeft.seconds)}
-              </div>
-              <div className="text-xs text-[oklch(0.55_0.03_85)] font-light uppercase tracking-wider">
-                Sek
-              </div>
+              <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[oklch(0.65_0.03_85)] mb-1 tabular-nums">{padZero(timeLeft.seconds)}</div>
+              <div className="text-xs text-[oklch(0.55_0.03_85)] font-light uppercase tracking-wider">Sek</div>
             </div>
           </div>
 
@@ -386,22 +504,55 @@ export default function Home() {
             Yhteys jakajaan
           </h2>
           
-          {/* Email reveal with coin flip */}
+          {/* Email reveal with coin flip + slot machine */}
           <div className="text-center mb-8 sm:mb-12">
-            {!emailRevealed ? (
+            {!emailRevealed && coinPhase === 'idle' && (
               <Button
                 onClick={handleCoinFlip}
-                disabled={coinFlipping}
                 className="bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] 
                          transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(212,175,55,0.4)]
                          font-semibold text-lg px-8 py-4"
               >
-                {coinFlipping ? "🪙 Heitetään..." : "🪙 Heitä kolikkoa paljastaaksesi sähköposti"}
+                🪙 Heitä kolikkoa paljastaaksesi sähköposti
               </Button>
-            ) : (
-              <p className="text-base sm:text-lg text-[oklch(0.65_0.03_85)] animate-fade-in">
-                Ota yhteyttä sähköpostitse: <a href="mailto:vili@matilda.media" className="text-[oklch(0.75_0.15_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors underline">vili@matilda.media</a>
-              </p>
+            )}
+
+            {/* Coin flip animation */}
+            {(coinPhase === 'flipping' || coinPhase === 'landing') && (
+              <div className="flex flex-col items-center gap-4">
+                <div className={`
+                  text-7xl sm:text-8xl
+                  ${coinPhase === 'flipping' ? 'animate-coin-spin' : 'animate-coin-land'}
+                `}>
+                  🪙
+                </div>
+                <p className="text-[oklch(0.65_0.03_85)] text-sm">
+                  {coinPhase === 'flipping' ? 'Kolikko pyörii...' : 'Kolikko laskeutuu...'}
+                </p>
+              </div>
+            )}
+
+            {/* After coin flip, show slot machine prompt */}
+            {coinPhase === 'done' && !emailRevealed && !showSlot && (
+              <div className="animate-fade-in">
+                <p className="text-[oklch(0.65_0.03_85)] mb-4">Kolikko tippui! Nyt tarvitset vielä jackpotin...</p>
+                <Button
+                  onClick={() => setShowSlot(true)}
+                  className="bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] 
+                           transition-all duration-300 hover:scale-105 font-semibold text-lg px-8 py-4"
+                >
+                  🎰 Avaa hedelmäpeli
+                </Button>
+              </div>
+            )}
+
+            {/* Email revealed */}
+            {emailRevealed && (
+              <div className="animate-fade-in">
+                <p className="text-base sm:text-lg text-[oklch(0.65_0.03_85)]">
+                  Ota yhteyttä sähköpostitse: <a href="mailto:vili@matilda.media" className="text-[oklch(0.75_0.15_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors underline">vili@matilda.media</a>
+                </p>
+              </div>
             )}
           </div>
 
@@ -417,7 +568,6 @@ export default function Home() {
                          focus:border-[oklch(0.75_0.15_85)] focus:ring-[oklch(0.75_0.15_85)]"
               />
             </div>
-            
             <div>
               <Input
                 type="email"
@@ -429,7 +579,6 @@ export default function Home() {
                          focus:border-[oklch(0.75_0.15_85)] focus:ring-[oklch(0.75_0.15_85)]"
               />
             </div>
-            
             <div>
               <Textarea
                 placeholder="Viesti"
@@ -441,7 +590,6 @@ export default function Home() {
                          focus:border-[oklch(0.75_0.15_85)] focus:ring-[oklch(0.75_0.15_85)] resize-none"
               />
             </div>
-            
             <Button
               type="submit"
               className="w-full bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] 
@@ -454,75 +602,96 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Wheel of Fortune Modal */}
-      {showWheel && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-[oklch(0.15_0.04_250)] border-2 border-[oklch(0.75_0.15_85)] rounded-2xl p-6 sm:p-8 max-w-md w-full">
-            <h3 className="text-2xl sm:text-3xl font-bold text-[oklch(0.75_0.15_85)] text-center mb-6">
-              Onnenpyörä
-            </h3>
-            
-            <p className="text-center text-[oklch(0.65_0.03_85)] mb-8">
-              Pyöräytä onnenpyörää lähettääksesi viestisi!
-            </p>
+      {/* Slot Machine Modal */}
+      {showSlot && (
+        <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-b from-[oklch(0.18_0.04_250)] to-[oklch(0.12_0.03_250)] border-2 border-[oklch(0.75_0.15_85)] rounded-2xl p-6 sm:p-8 max-w-sm w-full shadow-[0_0_60px_rgba(212,175,55,0.2)]">
+            {/* Slot machine header */}
+            <div className="text-center mb-6">
+              <h3 className="text-2xl sm:text-3xl font-bold text-[oklch(0.75_0.15_85)] mb-2">
+                🎰 JACKPOT
+              </h3>
+              <p className="text-sm text-[oklch(0.55_0.03_85)]">
+                Saat kolme punaista seiskaa = sähköposti paljastuu
+              </p>
+            </div>
 
-            {/* Wheel */}
-            <div className="relative w-64 h-64 mx-auto mb-8">
-              <div 
-                className="w-full h-full rounded-full border-8 border-[oklch(0.75_0.15_85)] relative overflow-hidden transition-transform duration-[3000ms] ease-out"
-                style={{ transform: `rotate(${wheelRotation}deg)` }}
-              >
-                {/* Green segment (top half) - Message sent */}
-                <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.55_0.20_145)] to-[oklch(0.45_0.18_145)]" style={{ clipPath: 'polygon(50% 50%, 0% 0%, 100% 0%)' }}>
-                  <div className="absolute top-[30%] left-1/2 -translate-x-1/2 text-white font-bold text-base sm:text-lg text-center px-2">
-                    Viesti<br/>lähetetään
-                  </div>
-                </div>
-                {/* Red segment (bottom half) - Message not sent */}
-                <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.45_0.22_25)] to-[oklch(0.35_0.20_25)]" style={{ clipPath: 'polygon(50% 50%, 0% 100%, 100% 100%)' }}>
-                  <div className="absolute bottom-[30%] left-1/2 -translate-x-1/2 text-white font-bold text-base sm:text-lg text-center px-2">
-                    Viestiäsi ei<br/>lähetetä
-                  </div>
-                </div>
-                {/* Center divider line */}
-                <div className="absolute top-1/2 left-0 right-0 h-1 bg-[oklch(0.75_0.15_85)]"></div>
-              </div>
-              
-              {/* Pointer */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2">
-                <div className="w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[25px] border-t-[oklch(0.75_0.15_85)]"></div>
+            {/* Slot reels */}
+            <div className="flex justify-center gap-3 sm:gap-4 mb-6">
+              <SlotReel 
+                spinning={slotSpinning} 
+                finalSymbol={reelSymbols[0]} 
+                delay={1200}
+                isWin={slotWon}
+              />
+              <SlotReel 
+                spinning={slotSpinning} 
+                finalSymbol={reelSymbols[1]} 
+                delay={1800}
+                isWin={slotWon}
+              />
+              <SlotReel 
+                spinning={slotSpinning} 
+                finalSymbol={reelSymbols[2]} 
+                delay={2400}
+                isWin={slotWon}
+              />
+            </div>
+
+            {/* Win line indicator */}
+            <div className="flex justify-center mb-6">
+              <div className="h-0.5 w-full max-w-[280px] bg-[oklch(0.75_0.15_85)]/30 relative">
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[oklch(0.75_0.15_85)]"></div>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[oklch(0.75_0.15_85)]"></div>
               </div>
             </div>
 
-            <div className="flex gap-4">
-              <Button
-                onClick={spinWheel}
-                disabled={spinning}
-                className="flex-1 bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] 
-                         transition-all duration-300 hover:scale-105 font-semibold py-3"
-              >
-                {spinning ? "Pyörii..." : spinCount < 3 ? "Pyöräytä!" : "Pyöräytä uudelleen"}
-              </Button>
-              
-              {!spinning && spinCount < 3 && (
+            {/* Spin button */}
+            {!slotWon && (
+              <div className="flex gap-3">
                 <Button
-                  onClick={() => {
-                    setShowWheel(false);
-                    setSpinCount(0);
-                    setWheelRotation(0);
-                  }}
-                  variant="outline"
-                  className="flex-1 border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.75_0.15_85)] hover:bg-[oklch(0.75_0.15_85)]/10"
+                  onClick={handleSlotSpin}
+                  disabled={slotSpinning}
+                  className="flex-1 bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] 
+                           transition-all duration-300 hover:scale-105 font-bold text-lg py-4
+                           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  Peruuta
+                  {slotSpinning ? "Pyörii..." : "VEDÄ"}
                 </Button>
-              )}
-            </div>
+                
+                {!slotSpinning && (
+                  <Button
+                    onClick={() => {
+                      setShowSlot(false);
+                      setSpinCount(0);
+                      setReelSymbols(['?', '?', '?']);
+                    }}
+                    variant="outline"
+                    className="border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.75_0.15_85)] hover:bg-[oklch(0.75_0.15_85)]/10 py-4"
+                  >
+                    Sulje
+                  </Button>
+                )}
+              </div>
+            )}
 
-            {spinCount > 0 && spinCount < 3 && (
+            {/* Spin counter */}
+            {spinCount > 0 && !slotWon && (
               <p className="text-center text-[oklch(0.55_0.03_85)] text-sm mt-4">
                 Yritys {spinCount}/3
               </p>
+            )}
+
+            {/* Win message */}
+            {slotWon && (
+              <div className="text-center animate-fade-in">
+                <p className="text-xl font-bold text-red-500 mb-2">
+                  🎉 7 7 7 – JACKPOT! 🎉
+                </p>
+                <p className="text-[oklch(0.65_0.03_85)] text-sm">
+                  Sähköposti paljastettu!
+                </p>
+              </div>
             )}
           </div>
         </div>
