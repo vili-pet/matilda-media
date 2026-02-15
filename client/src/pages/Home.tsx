@@ -13,8 +13,8 @@ import { toast } from "sonner";
 export default function Home() {
   const [viewCount, setViewCount] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
-  const targetViews = 18000000;
-  const animationDuration = 180000; // 3 minutes in milliseconds
+  const targetViews = 22000000;
+  const animationDuration = 360000; // 6 minutes in milliseconds
 
   // Live countdown state
   const [timeLeft, setTimeLeft] = useState({
@@ -253,10 +253,10 @@ export default function Home() {
           
           <div className="text-base sm:text-lg text-[oklch(0.65_0.03_85)] font-light space-y-4 sm:space-y-6 px-4">
             <p>
-              Olen Vili, 35-vuotias sisällöntuottaja Lappeenrannasta. Erikoisalani on uhkapeliteemainen media – podcastit, klipit ja muu sisältö, joka resonoi yleisön kanssa.
+              Matilda Media on erikoistunut uhkapeliteemaiseen mediaan: podcasteihin, klippeihin, äänityksiin, videoihin ja valokuviin, jotka resonoivat yleisön kanssa.
             </p>
             <p>
-              Yli 18 miljoonaa orgaanista näyttökertaa kertoo sen, että osaan luoda sisältöä, joka leviää ja jää mieleen. Kun rahapelilaki aukeaa heinäkuussa 2027, olen jo valmiina.
+              Yli 22 miljoonaa orgaanista näyttökertaa kertovat sen, että Matilda Media osaa luoda sisältöä, joka leviää ja jää mieleen.
             </p>
             <p className="text-[oklch(0.75_0.15_85)] font-medium">
               Peli on jo käynnissä – oletko mukana?
