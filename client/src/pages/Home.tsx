@@ -31,8 +31,18 @@ export default function Home() {
     message: ""
   });
 
+  // Email reveal state
+  const [emailRevealed, setEmailRevealed] = useState(false);
+  const [coinFlipping, setCoinFlipping] = useState(false);
+
+  // Wheel of fortune state
+  const [showWheel, setShowWheel] = useState(false);
+  const [spinning, setSpinning] = useState(false);
+  const [spinCount, setSpinCount] = useState(0);
+  const [wheelRotation, setWheelRotation] = useState(0);
+
   useEffect(() => {
-    // Animate view counter from 0 to 18M over 3 minutes
+    // Animate view counter from 0 to 22M over 6 minutes
     const startTime = Date.now();
     const animationTimer = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -100,20 +110,66 @@ export default function Home() {
     return num.toString().padStart(2, '0');
   };
 
+  const handleCoinFlip = () => {
+    setCoinFlipping(true);
+    setTimeout(() => {
+      setEmailRevealed(true);
+      setCoinFlipping(false);
+      toast.success("Voitit! Sähköpostiosoite paljastettu 🎰");
+    }, 1000);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowWheel(true);
+  };
+
+  const spinWheel = () => {
+    if (spinning) return;
     
-    // Create mailto link
-    const subject = encodeURIComponent(`Yhteydenotto: ${formData.name}`);
-    const body = encodeURIComponent(`Nimi: ${formData.name}\nSähköposti: ${formData.email}\n\nViesti:\n${formData.message}`);
-    window.location.href = `mailto:vili@matilda.media?subject=${subject}&body=${body}`;
+    setSpinning(true);
+    const newSpinCount = spinCount + 1;
+    setSpinCount(newSpinCount);
+
+    // Spin animation
+    const spins = 5 + Math.random() * 3; // 5-8 full rotations
+    const extraDegrees = newSpinCount < 3 ? 45 : 180; // Lose segment or Win segment
+    const totalRotation = wheelRotation + (360 * spins) + extraDegrees;
     
-    toast.success("Talletuksesi on saatu. Olen sinuun yhteydessä 1–37 arkipäivän kuluessa.", {
-      duration: 5000,
-    });
-    
-    // Reset form
-    setFormData({ name: "", email: "", message: "" });
+    setWheelRotation(totalRotation);
+
+    setTimeout(() => {
+      setSpinning(false);
+      
+      if (newSpinCount < 3) {
+        // First two spins always lose
+        toast.error("Ei voittoa! Yritä uudelleen 🎰", {
+          duration: 3000,
+        });
+      } else {
+        // Third spin always wins
+        toast.success("Onneksi olkoon, voitit! 🎉", {
+          duration: 3000,
+        });
+        
+        setTimeout(() => {
+          // Create mailto link
+          const subject = encodeURIComponent(`Yhteydenotto: ${formData.name}`);
+          const body = encodeURIComponent(`Nimi: ${formData.name}\nSähköposti: ${formData.email}\n\nViesti:\n${formData.message}`);
+          window.location.href = `mailto:vili@matilda.media?subject=${subject}&body=${body}`;
+          
+          toast.success("Talletuksesi on saatu. Olen sinuun yhteydessä 1–37 arkipäivän kuluessa.", {
+            duration: 5000,
+          });
+          
+          // Reset form and wheel
+          setFormData({ name: "", email: "", message: "" });
+          setShowWheel(false);
+          setSpinCount(0);
+          setWheelRotation(0);
+        }, 1500);
+      }
+    }, 3000);
   };
 
   return (
@@ -163,7 +219,7 @@ export default function Home() {
               {formatNumber(viewCount)}
             </div>
             <div className="text-sm sm:text-base md:text-lg text-[oklch(0.65_0.03_85)] font-light">
-              Orgaanista näyttökertaa asiakkaideni sosiaalisen median kanavoissa,<br className="hidden sm:block" /> joihin sinäkin olet varmasti törmännyt
+              Orgaanista näyttökertaa asiakkaideni sosiaalisen median kanavoissa,<br className="hidden sm:block" /> joihin sinäkin olet varmasti törmännyt.
             </div>
           </div>
         </div>
@@ -173,7 +229,7 @@ export default function Home() {
       <section className="py-8 sm:py-12 md:py-16 px-4">
         <div className="container max-w-5xl mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-light text-center mb-10 sm:mb-14 text-[oklch(0.75_0.15_85)]" style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 300, letterSpacing: '0.02em' }}>
-            Matilda Media jakaa pöydän: podcastit, klipit ja muu sisältö
+            Matilda Media jakaa pöydän: podcastit, klipit ja muun sisällön:
           </h2>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 md:gap-12">
@@ -256,7 +312,7 @@ export default function Home() {
               Matilda Media on erikoistunut uhkapeliteemaiseen mediaan: podcasteihin, klippeihin, äänityksiin, videoihin ja valokuviin, jotka resonoivat yleisön kanssa.
             </p>
             <p>
-              Yli 22 miljoonaa orgaanista näyttökertaa kertovat sen, että Matilda Media osaa luoda sisältöä, joka leviää ja jää mieleen.
+              Yli 22 miljoonaa orgaanista näyttökertaa kotiuttavat sen, että me osaamme luoda sisältöä, joka leviää ja jää mieleen.
             </p>
             <p className="text-[oklch(0.75_0.15_85)] font-medium">
               Peli on jo käynnissä – oletko mukana?
@@ -269,18 +325,16 @@ export default function Home() {
       <section className="py-12 sm:py-16 md:py-20 px-4">
         <div className="container max-w-4xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-light mb-3 sm:mb-4 text-[oklch(0.65_0.03_85)]">
-            Peli alkaa pian...
+            Uusi aikakausi alkaa pian...
           </h2>
           
           <p className="text-sm sm:text-base md:text-lg text-[oklch(0.55_0.03_85)] font-light mb-6 sm:mb-8 px-4">
             Uusi jako alkaa <span className="text-[oklch(0.65_0.03_85)]">1. heinäkuuta 2027 klo 00:00</span>
           </p>
           
-          {/* Live Countdown Grid - Smaller and more subtle */}
+          {/* Live Countdown Grid */}
           <div className="grid grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-6 max-w-2xl mx-auto">
-            {/* Days */}
-            <div className="bg-[oklch(0.18_0.04_250)]/50 border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-2 sm:p-3 md:p-4 
-                          transition-all duration-300 hover:border-[oklch(0.75_0.15_85)]/30">
+            <div className="bg-[oklch(0.18_0.04_250)]/50 border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:border-[oklch(0.75_0.15_85)]/30">
               <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[oklch(0.65_0.03_85)] mb-1 tabular-nums">
                 {timeLeft.days}
               </div>
@@ -289,9 +343,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Hours */}
-            <div className="bg-[oklch(0.18_0.04_250)]/50 border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-2 sm:p-3 md:p-4 
-                          transition-all duration-300 hover:border-[oklch(0.75_0.15_85)]/30">
+            <div className="bg-[oklch(0.18_0.04_250)]/50 border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:border-[oklch(0.75_0.15_85)]/30">
               <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[oklch(0.65_0.03_85)] mb-1 tabular-nums">
                 {padZero(timeLeft.hours)}
               </div>
@@ -300,9 +352,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Minutes */}
-            <div className="bg-[oklch(0.18_0.04_250)]/50 border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-2 sm:p-3 md:p-4 
-                          transition-all duration-300 hover:border-[oklch(0.75_0.15_85)]/30">
+            <div className="bg-[oklch(0.18_0.04_250)]/50 border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:border-[oklch(0.75_0.15_85)]/30">
               <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[oklch(0.65_0.03_85)] mb-1 tabular-nums">
                 {padZero(timeLeft.minutes)}
               </div>
@@ -311,9 +361,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Seconds */}
-            <div className="bg-[oklch(0.18_0.04_250)]/50 border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-2 sm:p-3 md:p-4 
-                          transition-all duration-300 hover:border-[oklch(0.75_0.15_85)]/30">
+            <div className="bg-[oklch(0.18_0.04_250)]/50 border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 hover:border-[oklch(0.75_0.15_85)]/30">
               <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-[oklch(0.65_0.03_85)] mb-1 tabular-nums">
                 {padZero(timeLeft.seconds)}
               </div>
@@ -336,9 +384,24 @@ export default function Home() {
             Yhteys jakajaan
           </h2>
           
-          <p className="text-center text-base sm:text-lg text-[oklch(0.65_0.03_85)] mb-8 sm:mb-12">
-            Ota yhteyttä sähköpostitse: <a href="mailto:vili@matilda.media" className="text-[oklch(0.75_0.15_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors underline">vili@matilda.media</a>
-          </p>
+          {/* Email reveal with coin flip */}
+          <div className="text-center mb-8 sm:mb-12">
+            {!emailRevealed ? (
+              <Button
+                onClick={handleCoinFlip}
+                disabled={coinFlipping}
+                className="bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] 
+                         transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(212,175,55,0.4)]
+                         font-semibold text-lg px-8 py-4"
+              >
+                {coinFlipping ? "🪙 Heitetään..." : "🪙 Heitä kolikkoa paljastaaksesi sähköposti"}
+              </Button>
+            ) : (
+              <p className="text-base sm:text-lg text-[oklch(0.65_0.03_85)] animate-fade-in">
+                Ota yhteyttä sähköpostitse: <a href="mailto:vili@matilda.media" className="text-[oklch(0.75_0.15_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors underline">vili@matilda.media</a>
+              </p>
+            )}
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -388,6 +451,78 @@ export default function Home() {
           </form>
         </div>
       </section>
+
+      {/* Wheel of Fortune Modal */}
+      {showWheel && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-[oklch(0.15_0.04_250)] border-2 border-[oklch(0.75_0.15_85)] rounded-2xl p-6 sm:p-8 max-w-md w-full">
+            <h3 className="text-2xl sm:text-3xl font-bold text-[oklch(0.75_0.15_85)] text-center mb-6">
+              Onnenpyörä
+            </h3>
+            
+            <p className="text-center text-[oklch(0.65_0.03_85)] mb-8">
+              Pyöräytä onnenpyörää lähettääksesi viestisi!
+            </p>
+
+            {/* Wheel */}
+            <div className="relative w-64 h-64 mx-auto mb-8">
+              <div 
+                className="w-full h-full rounded-full border-8 border-[oklch(0.75_0.15_85)] relative overflow-hidden transition-transform duration-[3000ms] ease-out"
+                style={{ transform: `rotate(${wheelRotation}deg)` }}
+              >
+                {/* Win segment (top half) */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.50_0.20_120)] to-[oklch(0.40_0.18_120)]" style={{ clipPath: 'polygon(50% 50%, 0% 0%, 100% 0%)' }}>
+                  <div className="absolute top-1/4 left-1/2 -translate-x-1/2 text-white font-bold text-lg">
+                    VOITTO!
+                  </div>
+                </div>
+                {/* Lose segment (bottom half) */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.40_0.20_20)] to-[oklch(0.30_0.18_20)]" style={{ clipPath: 'polygon(50% 50%, 0% 100%, 100% 100%)' }}>
+                  <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 text-white font-bold text-lg">
+                    EI VOITTOA
+                  </div>
+                </div>
+              </div>
+              
+              {/* Pointer */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2">
+                <div className="w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[25px] border-t-[oklch(0.75_0.15_85)]"></div>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <Button
+                onClick={spinWheel}
+                disabled={spinning}
+                className="flex-1 bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] 
+                         transition-all duration-300 hover:scale-105 font-semibold py-3"
+              >
+                {spinning ? "Pyörii..." : spinCount < 3 ? "Pyöräytä!" : "Pyöräytä uudelleen"}
+              </Button>
+              
+              {!spinning && spinCount < 3 && (
+                <Button
+                  onClick={() => {
+                    setShowWheel(false);
+                    setSpinCount(0);
+                    setWheelRotation(0);
+                  }}
+                  variant="outline"
+                  className="flex-1 border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.75_0.15_85)] hover:bg-[oklch(0.75_0.15_85)]/10"
+                >
+                  Peruuta
+                </Button>
+              )}
+            </div>
+
+            {spinCount > 0 && spinCount < 3 && (
+              <p className="text-center text-[oklch(0.55_0.03_85)] text-sm mt-4">
+                Yritys {spinCount}/3
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
