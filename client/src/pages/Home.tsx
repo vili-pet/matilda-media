@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
  * Matilda Media - Casino-themed media production website
  * Design: Simple, elegant dark blue and gold aesthetic with smooth animations
  * Focus: Content over decoration with dynamic interactions
+ * Mobile-first responsive design
  */
 export default function Home() {
   const [viewCount, setViewCount] = useState(0);
@@ -94,21 +95,21 @@ export default function Home() {
           <div className="absolute top-1/2 left-1/4 w-16 h-16 border-2 border-[oklch(0.75_0.15_85)] -rotate-12 animate-bounce-slow"></div>
         </div>
 
-        <div className="text-center z-10 max-w-4xl">
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 gold-gradient animate-fade-in">
+        <div className="text-center z-10 max-w-4xl w-full">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-4 sm:mb-6 gold-gradient animate-fade-in px-4">
             MATILDA MEDIA
           </h1>
           
-          <p className="text-2xl md:text-3xl text-[oklch(0.75_0.15_85)] mb-12 font-light tracking-wide animate-fade-in-delay">
+          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-[oklch(0.75_0.15_85)] mb-8 sm:mb-12 font-light tracking-wide animate-fade-in-delay px-4">
             Pelin säännöt sanelevat sisällön
           </p>
 
-          {/* View Counter */}
-          <div className="mb-16 animate-fade-in-delay-2">
-            <div className="text-6xl md:text-7xl font-bold text-[oklch(0.75_0.15_85)] mb-4 tabular-nums transition-all duration-300">
+          {/* View Counter - Smaller and more responsive */}
+          <div className="mb-12 sm:mb-16 animate-fade-in-delay-2 px-4">
+            <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-3 tabular-nums transition-all duration-300">
               {formatNumber(viewCount)}
             </div>
-            <div className="text-lg md:text-xl text-[oklch(0.65_0.03_85)] font-light">
+            <div className="text-sm sm:text-base md:text-lg text-[oklch(0.65_0.03_85)] font-light">
               Orgaanista näyttökertaa
             </div>
           </div>
@@ -116,70 +117,73 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="py-24 px-4">
+      <section className="py-16 sm:py-20 md:py-24 px-4">
         <div className="container max-w-5xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-[oklch(0.75_0.15_85)]">
-            Pöydän antimet
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-12 sm:mb-16 text-[oklch(0.75_0.15_85)]" style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 700, letterSpacing: '0.05em' }}>
+            PÖYDÄN ANTIMET
           </h2>
 
-          <div className="grid md:grid-cols-3 gap-12">
-            {/* Podcasts */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 md:gap-12">
+            {/* Podcasts - Purple/Violet theme */}
             <div className="text-center group cursor-pointer">
               <div className="mb-6 relative">
-                <div className="w-24 h-24 mx-auto border-2 border-[oklch(0.75_0.15_85)] rounded-full flex items-center justify-center 
+                <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto rounded-2xl flex items-center justify-center 
+                              bg-gradient-to-br from-[oklch(0.45_0.15_280)] to-[oklch(0.25_0.12_280)]
                               transition-all duration-500 ease-out
-                              group-hover:scale-110 group-hover:bg-[oklch(0.75_0.15_85)]/20 group-hover:shadow-[0_0_30px_rgba(212,175,55,0.4)]
-                              group-hover:rotate-[360deg]">
-                  <svg className="w-12 h-12 text-[oklch(0.75_0.15_85)] transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                              group-hover:scale-105 group-hover:shadow-[0_0_40px_rgba(138,43,226,0.5)]
+                              border border-[oklch(0.55_0.15_280)]/30">
+                  <svg className="w-16 h-16 sm:w-20 sm:h-20 text-[oklch(0.85_0.08_280)] transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                   </svg>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-[oklch(0.85_0.15_85)] transition-all duration-300 group-hover:text-[oklch(0.95_0.15_85)] group-hover:scale-105">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[oklch(0.85_0.08_280)] transition-all duration-300 group-hover:text-[oklch(0.95_0.08_280)] group-hover:scale-105">
                 Podcastit
               </h3>
-              <p className="text-[oklch(0.65_0.03_85)] font-light transition-all duration-300 group-hover:text-[oklch(0.75_0.03_85)]">
+              <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light transition-all duration-300 group-hover:text-[oklch(0.75_0.03_85)] px-2">
                 Ääni, joka kantaa – strategiset siirrot podcasteina
               </p>
             </div>
 
-            {/* Clips */}
+            {/* Clips - Red/Crimson theme */}
             <div className="text-center group cursor-pointer">
               <div className="mb-6 relative">
-                <div className="w-24 h-24 mx-auto border-2 border-[oklch(0.75_0.15_85)] rounded-full flex items-center justify-center 
+                <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto rounded-2xl flex items-center justify-center 
+                              bg-gradient-to-br from-[oklch(0.50_0.20_20)] to-[oklch(0.30_0.18_20)]
                               transition-all duration-500 ease-out
-                              group-hover:scale-110 group-hover:bg-[oklch(0.75_0.15_85)]/20 group-hover:shadow-[0_0_30px_rgba(212,175,55,0.4)]
-                              group-hover:rotate-[360deg]">
-                  <svg className="w-12 h-12 text-[oklch(0.75_0.15_85)] transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              group-hover:scale-105 group-hover:shadow-[0_0_40px_rgba(220,20,60,0.5)]
+                              border border-[oklch(0.60_0.20_20)]/30">
+                  <svg className="w-16 h-16 sm:w-20 sm:h-20 text-[oklch(0.90_0.10_20)] transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-[oklch(0.85_0.15_85)] transition-all duration-300 group-hover:text-[oklch(0.95_0.15_85)] group-hover:scale-105">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[oklch(0.85_0.15_20)] transition-all duration-300 group-hover:text-[oklch(0.95_0.15_20)] group-hover:scale-105">
                 Klipit
               </h3>
-              <p className="text-[oklch(0.65_0.03_85)] font-light transition-all duration-300 group-hover:text-[oklch(0.75_0.03_85)]">
+              <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light transition-all duration-300 group-hover:text-[oklch(0.75_0.03_85)] px-2">
                 Nopeat voitot – iskevät klipit, jotka jäävät mieleen
               </p>
             </div>
 
-            {/* Content */}
-            <div className="text-center group cursor-pointer">
+            {/* Content - Teal/Cyan theme */}
+            <div className="text-center group cursor-pointer sm:col-span-2 lg:col-span-1">
               <div className="mb-6 relative">
-                <div className="w-24 h-24 mx-auto border-2 border-[oklch(0.75_0.15_85)] rounded-full flex items-center justify-center 
+                <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto rounded-2xl flex items-center justify-center 
+                              bg-gradient-to-br from-[oklch(0.50_0.12_200)] to-[oklch(0.30_0.10_200)]
                               transition-all duration-500 ease-out
-                              group-hover:scale-110 group-hover:bg-[oklch(0.75_0.15_85)]/20 group-hover:shadow-[0_0_30px_rgba(212,175,55,0.4)]
-                              group-hover:rotate-[360deg]">
-                  <svg className="w-12 h-12 text-[oklch(0.75_0.15_85)] transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                              group-hover:scale-105 group-hover:shadow-[0_0_40px_rgba(0,206,209,0.5)]
+                              border border-[oklch(0.60_0.12_200)]/30">
+                  <svg className="w-16 h-16 sm:w-20 sm:h-20 text-[oklch(0.85_0.08_200)] transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-[oklch(0.85_0.15_85)] transition-all duration-300 group-hover:text-[oklch(0.95_0.15_85)] group-hover:scale-105">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[oklch(0.85_0.10_200)] transition-all duration-300 group-hover:text-[oklch(0.95_0.10_200)] group-hover:scale-105">
                 Muu sisältö
               </h3>
-              <p className="text-[oklch(0.65_0.03_85)] font-light transition-all duration-300 group-hover:text-[oklch(0.75_0.03_85)]">
+              <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light transition-all duration-300 group-hover:text-[oklch(0.75_0.03_85)] px-2">
                 Jokeri hihassa – luovat ratkaisut kaikkiin mediatarpeisiin
               </p>
             </div>
@@ -188,75 +192,75 @@ export default function Home() {
       </section>
 
       {/* Countdown Section */}
-      <section className="py-24 px-4 bg-gradient-to-b from-transparent to-[oklch(0.15_0.04_250)]">
+      <section className="py-16 sm:py-20 md:py-24 px-4 bg-gradient-to-b from-transparent to-[oklch(0.15_0.04_250)]">
         <div className="container max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-12 text-[oklch(0.75_0.15_85)]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 text-[oklch(0.75_0.15_85)]">
             Peli alkaa pian...
           </h2>
           
-          {/* Live Countdown Grid */}
-          <div className="grid grid-cols-4 gap-4 md:gap-8 mb-8 max-w-3xl mx-auto">
+          {/* Live Countdown Grid - Responsive */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-8 max-w-3xl mx-auto">
             {/* Days */}
-            <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-4 md:p-6 
+            <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-3 sm:p-4 md:p-6 
                           transition-all duration-300 hover:scale-105 hover:border-[oklch(0.75_0.15_85)]/60 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]">
-              <div className="text-4xl md:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-2 tabular-nums">
+              <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-1 sm:mb-2 tabular-nums">
                 {timeLeft.days}
               </div>
-              <div className="text-xs md:text-sm text-[oklch(0.65_0.03_85)] font-light uppercase tracking-wider">
+              <div className="text-xs sm:text-sm text-[oklch(0.65_0.03_85)] font-light uppercase tracking-wider">
                 Päivää
               </div>
             </div>
 
             {/* Hours */}
-            <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-4 md:p-6 
+            <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-3 sm:p-4 md:p-6 
                           transition-all duration-300 hover:scale-105 hover:border-[oklch(0.75_0.15_85)]/60 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]">
-              <div className="text-4xl md:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-2 tabular-nums">
+              <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-1 sm:mb-2 tabular-nums">
                 {padZero(timeLeft.hours)}
               </div>
-              <div className="text-xs md:text-sm text-[oklch(0.65_0.03_85)] font-light uppercase tracking-wider">
+              <div className="text-xs sm:text-sm text-[oklch(0.65_0.03_85)] font-light uppercase tracking-wider">
                 Tuntia
               </div>
             </div>
 
             {/* Minutes */}
-            <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-4 md:p-6 
+            <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-3 sm:p-4 md:p-6 
                           transition-all duration-300 hover:scale-105 hover:border-[oklch(0.75_0.15_85)]/60 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]">
-              <div className="text-4xl md:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-2 tabular-nums">
+              <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-1 sm:mb-2 tabular-nums">
                 {padZero(timeLeft.minutes)}
               </div>
-              <div className="text-xs md:text-sm text-[oklch(0.65_0.03_85)] font-light uppercase tracking-wider">
-                Minuuttia
+              <div className="text-xs sm:text-sm text-[oklch(0.65_0.03_85)] font-light uppercase tracking-wider">
+                Min
               </div>
             </div>
 
             {/* Seconds */}
-            <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-4 md:p-6 
+            <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-3 sm:p-4 md:p-6 
                           transition-all duration-300 hover:scale-105 hover:border-[oklch(0.75_0.15_85)]/60 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]">
-              <div className="text-4xl md:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-2 tabular-nums">
+              <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-1 sm:mb-2 tabular-nums">
                 {padZero(timeLeft.seconds)}
               </div>
-              <div className="text-xs md:text-sm text-[oklch(0.65_0.03_85)] font-light uppercase tracking-wider">
-                Sekuntia
+              <div className="text-xs sm:text-sm text-[oklch(0.65_0.03_85)] font-light uppercase tracking-wider">
+                Sek
               </div>
             </div>
           </div>
 
-          <p className="text-lg md:text-xl text-[oklch(0.65_0.03_85)] font-light mb-4">
+          <p className="text-base sm:text-lg md:text-xl text-[oklch(0.65_0.03_85)] font-light mb-3 sm:mb-4 px-4">
             Uusi jako alkaa 07/2027
           </p>
-          <p className="text-md text-[oklch(0.55_0.03_85)] font-light italic">
+          <p className="text-sm sm:text-base text-[oklch(0.55_0.03_85)] font-light italic px-4">
             Oletko valmis?
           </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 border-t border-[oklch(0.75_0.15_85)]/20">
+      <footer className="py-10 sm:py-12 px-4 border-t border-[oklch(0.75_0.15_85)]/20">
         <div className="container max-w-5xl mx-auto text-center">
-          <h3 className="text-2xl font-bold mb-4 text-[oklch(0.75_0.15_85)] transition-all duration-300 hover:scale-105">
+          <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[oklch(0.75_0.15_85)] transition-all duration-300 hover:scale-105">
             Yhteys jakajaan
           </h3>
-          <p className="text-[oklch(0.65_0.03_85)] transition-all duration-300 hover:text-[oklch(0.75_0.03_85)]">
+          <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] transition-all duration-300 hover:text-[oklch(0.75_0.03_85)]">
             Matilda Media – Lappeenranta, Suomi
           </p>
         </div>
