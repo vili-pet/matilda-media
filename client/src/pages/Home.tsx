@@ -2,65 +2,110 @@ import { useEffect, useState } from "react";
 
 /**
  * Matilda Media - Casino-themed media production website
- * Design: Simple, elegant dark blue and gold aesthetic
- * Focus: Content over decoration
+ * Design: Simple, elegant dark blue and gold aesthetic with smooth animations
+ * Focus: Content over decoration with dynamic interactions
  */
 export default function Home() {
   const [viewCount, setViewCount] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(true);
   const targetViews = 18000000;
+  const animationDuration = 180000; // 3 minutes in milliseconds
+  const tickRate = 2; // views per second after animation
+
+  // Live countdown state
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
 
   useEffect(() => {
-    // Animate view counter on load
-    const duration = 2000;
-    const steps = 60;
-    const increment = targetViews / steps;
-    let current = 0;
-
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= targetViews) {
-        setViewCount(targetViews);
-        clearInterval(timer);
+    // Animate view counter to 18M over 3 minutes
+    const startTime = Date.now();
+    const animationTimer = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / animationDuration, 1);
+      
+      if (progress < 1) {
+        // Smooth easing function for the animation
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        setViewCount(Math.floor(targetViews * easeOutQuart));
       } else {
-        setViewCount(Math.floor(current));
+        setViewCount(targetViews);
+        setIsAnimating(false);
+        clearInterval(animationTimer);
       }
-    }, duration / steps);
+    }, 50);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(animationTimer);
+  }, []);
+
+  useEffect(() => {
+    // After animation, tick at 2 views per second
+    if (!isAnimating) {
+      const tickTimer = setInterval(() => {
+        setViewCount(prev => prev + tickRate);
+      }, 1000);
+
+      return () => clearInterval(tickTimer);
+    }
+  }, [isAnimating]);
+
+  // Live countdown to July 1, 2027
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const targetDate = new Date('2027-07-01T00:00:00').getTime();
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((difference % (1000 * 60)) / 1000)
+        });
+      }
+    };
+
+    calculateTimeLeft();
+    const countdownTimer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(countdownTimer);
   }, []);
 
   const formatNumber = (num: number) => {
     return num.toLocaleString('fi-FI');
   };
 
-  // Calculate days until July 1, 2027
-  const targetDate = new Date('2027-07-01T00:00:00');
-  const now = new Date();
-  const daysUntil = Math.ceil((targetDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  const padZero = (num: number) => {
+    return num.toString().padStart(2, '0');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[oklch(0.12_0.03_250)] to-[oklch(0.08_0.02_250)]">
       {/* Hero Section */}
       <section className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden">
-        {/* Subtle background pattern */}
+        {/* Subtle animated background pattern */}
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-20 left-10 w-32 h-32 border-2 border-[oklch(0.75_0.15_85)] rotate-45"></div>
-          <div className="absolute bottom-40 right-20 w-24 h-24 border-2 border-[oklch(0.75_0.15_85)] rotate-12"></div>
-          <div className="absolute top-1/2 left-1/4 w-16 h-16 border-2 border-[oklch(0.75_0.15_85)] -rotate-12"></div>
+          <div className="absolute top-20 left-10 w-32 h-32 border-2 border-[oklch(0.75_0.15_85)] rotate-45 animate-spin-slow"></div>
+          <div className="absolute bottom-40 right-20 w-24 h-24 border-2 border-[oklch(0.75_0.15_85)] rotate-12 animate-pulse-slow"></div>
+          <div className="absolute top-1/2 left-1/4 w-16 h-16 border-2 border-[oklch(0.75_0.15_85)] -rotate-12 animate-bounce-slow"></div>
         </div>
 
         <div className="text-center z-10 max-w-4xl">
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 gold-gradient">
+          <h1 className="text-6xl md:text-8xl font-bold mb-6 gold-gradient animate-fade-in">
             MATILDA MEDIA
           </h1>
           
-          <p className="text-2xl md:text-3xl text-[oklch(0.75_0.15_85)] mb-12 font-light tracking-wide">
+          <p className="text-2xl md:text-3xl text-[oklch(0.75_0.15_85)] mb-12 font-light tracking-wide animate-fade-in-delay">
             Pelin säännöt sanelevat sisällön
           </p>
 
           {/* View Counter */}
-          <div className="mb-16">
-            <div className="text-6xl md:text-7xl font-bold text-[oklch(0.75_0.15_85)] mb-4 tabular-nums">
+          <div className="mb-16 animate-fade-in-delay-2">
+            <div className="text-6xl md:text-7xl font-bold text-[oklch(0.75_0.15_85)] mb-4 tabular-nums transition-all duration-300">
               {formatNumber(viewCount)}
             </div>
             <div className="text-lg md:text-xl text-[oklch(0.65_0.03_85)] font-light">
@@ -79,47 +124,62 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-12">
             {/* Podcasts */}
-            <div className="text-center group">
+            <div className="text-center group cursor-pointer">
               <div className="mb-6 relative">
-                <div className="w-24 h-24 mx-auto border-2 border-[oklch(0.75_0.15_85)] rounded-full flex items-center justify-center group-hover:bg-[oklch(0.75_0.15_85)]/10 transition-all duration-300">
-                  <svg className="w-12 h-12 text-[oklch(0.75_0.15_85)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-24 h-24 mx-auto border-2 border-[oklch(0.75_0.15_85)] rounded-full flex items-center justify-center 
+                              transition-all duration-500 ease-out
+                              group-hover:scale-110 group-hover:bg-[oklch(0.75_0.15_85)]/20 group-hover:shadow-[0_0_30px_rgba(212,175,55,0.4)]
+                              group-hover:rotate-[360deg]">
+                  <svg className="w-12 h-12 text-[oklch(0.75_0.15_85)] transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                   </svg>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-[oklch(0.85_0.15_85)]">Podcastit</h3>
-              <p className="text-[oklch(0.65_0.03_85)] font-light">
+              <h3 className="text-2xl font-bold mb-4 text-[oklch(0.85_0.15_85)] transition-all duration-300 group-hover:text-[oklch(0.95_0.15_85)] group-hover:scale-105">
+                Podcastit
+              </h3>
+              <p className="text-[oklch(0.65_0.03_85)] font-light transition-all duration-300 group-hover:text-[oklch(0.75_0.03_85)]">
                 Ääni, joka kantaa – strategiset siirrot podcasteina
               </p>
             </div>
 
             {/* Clips */}
-            <div className="text-center group">
+            <div className="text-center group cursor-pointer">
               <div className="mb-6 relative">
-                <div className="w-24 h-24 mx-auto border-2 border-[oklch(0.75_0.15_85)] rounded-full flex items-center justify-center group-hover:bg-[oklch(0.75_0.15_85)]/10 transition-all duration-300">
-                  <svg className="w-12 h-12 text-[oklch(0.75_0.15_85)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-24 h-24 mx-auto border-2 border-[oklch(0.75_0.15_85)] rounded-full flex items-center justify-center 
+                              transition-all duration-500 ease-out
+                              group-hover:scale-110 group-hover:bg-[oklch(0.75_0.15_85)]/20 group-hover:shadow-[0_0_30px_rgba(212,175,55,0.4)]
+                              group-hover:rotate-[360deg]">
+                  <svg className="w-12 h-12 text-[oklch(0.75_0.15_85)] transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-[oklch(0.85_0.15_85)]">Klipit</h3>
-              <p className="text-[oklch(0.65_0.03_85)] font-light">
+              <h3 className="text-2xl font-bold mb-4 text-[oklch(0.85_0.15_85)] transition-all duration-300 group-hover:text-[oklch(0.95_0.15_85)] group-hover:scale-105">
+                Klipit
+              </h3>
+              <p className="text-[oklch(0.65_0.03_85)] font-light transition-all duration-300 group-hover:text-[oklch(0.75_0.03_85)]">
                 Nopeat voitot – iskevät klipit, jotka jäävät mieleen
               </p>
             </div>
 
             {/* Content */}
-            <div className="text-center group">
+            <div className="text-center group cursor-pointer">
               <div className="mb-6 relative">
-                <div className="w-24 h-24 mx-auto border-2 border-[oklch(0.75_0.15_85)] rounded-full flex items-center justify-center group-hover:bg-[oklch(0.75_0.15_85)]/10 transition-all duration-300">
-                  <svg className="w-12 h-12 text-[oklch(0.75_0.15_85)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-24 h-24 mx-auto border-2 border-[oklch(0.75_0.15_85)] rounded-full flex items-center justify-center 
+                              transition-all duration-500 ease-out
+                              group-hover:scale-110 group-hover:bg-[oklch(0.75_0.15_85)]/20 group-hover:shadow-[0_0_30px_rgba(212,175,55,0.4)]
+                              group-hover:rotate-[360deg]">
+                  <svg className="w-12 h-12 text-[oklch(0.75_0.15_85)] transition-transform duration-500 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-[oklch(0.85_0.15_85)]">Muu sisältö</h3>
-              <p className="text-[oklch(0.65_0.03_85)] font-light">
+              <h3 className="text-2xl font-bold mb-4 text-[oklch(0.85_0.15_85)] transition-all duration-300 group-hover:text-[oklch(0.95_0.15_85)] group-hover:scale-105">
+                Muu sisältö
+              </h3>
+              <p className="text-[oklch(0.65_0.03_85)] font-light transition-all duration-300 group-hover:text-[oklch(0.75_0.03_85)]">
                 Jokeri hihassa – luovat ratkaisut kaikkiin mediatarpeisiin
               </p>
             </div>
@@ -129,17 +189,55 @@ export default function Home() {
 
       {/* Countdown Section */}
       <section className="py-24 px-4 bg-gradient-to-b from-transparent to-[oklch(0.15_0.04_250)]">
-        <div className="container max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-8 text-[oklch(0.75_0.15_85)]">
+        <div className="container max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-12 text-[oklch(0.75_0.15_85)]">
             Peli alkaa pian...
           </h2>
           
-          <div className="mb-8">
-            <div className="text-7xl md:text-8xl font-bold text-[oklch(0.75_0.15_85)] mb-4 tabular-nums">
-              {daysUntil}
+          {/* Live Countdown Grid */}
+          <div className="grid grid-cols-4 gap-4 md:gap-8 mb-8 max-w-3xl mx-auto">
+            {/* Days */}
+            <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-4 md:p-6 
+                          transition-all duration-300 hover:scale-105 hover:border-[oklch(0.75_0.15_85)]/60 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+              <div className="text-4xl md:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-2 tabular-nums">
+                {timeLeft.days}
+              </div>
+              <div className="text-xs md:text-sm text-[oklch(0.65_0.03_85)] font-light uppercase tracking-wider">
+                Päivää
+              </div>
             </div>
-            <div className="text-xl md:text-2xl text-[oklch(0.65_0.03_85)] font-light">
-              päivää jäljellä
+
+            {/* Hours */}
+            <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-4 md:p-6 
+                          transition-all duration-300 hover:scale-105 hover:border-[oklch(0.75_0.15_85)]/60 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+              <div className="text-4xl md:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-2 tabular-nums">
+                {padZero(timeLeft.hours)}
+              </div>
+              <div className="text-xs md:text-sm text-[oklch(0.65_0.03_85)] font-light uppercase tracking-wider">
+                Tuntia
+              </div>
+            </div>
+
+            {/* Minutes */}
+            <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-4 md:p-6 
+                          transition-all duration-300 hover:scale-105 hover:border-[oklch(0.75_0.15_85)]/60 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+              <div className="text-4xl md:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-2 tabular-nums">
+                {padZero(timeLeft.minutes)}
+              </div>
+              <div className="text-xs md:text-sm text-[oklch(0.65_0.03_85)] font-light uppercase tracking-wider">
+                Minuuttia
+              </div>
+            </div>
+
+            {/* Seconds */}
+            <div className="bg-[oklch(0.18_0.04_250)] border border-[oklch(0.75_0.15_85)]/30 rounded-lg p-4 md:p-6 
+                          transition-all duration-300 hover:scale-105 hover:border-[oklch(0.75_0.15_85)]/60 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+              <div className="text-4xl md:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-2 tabular-nums">
+                {padZero(timeLeft.seconds)}
+              </div>
+              <div className="text-xs md:text-sm text-[oklch(0.65_0.03_85)] font-light uppercase tracking-wider">
+                Sekuntia
+              </div>
             </div>
           </div>
 
@@ -155,10 +253,10 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-12 px-4 border-t border-[oklch(0.75_0.15_85)]/20">
         <div className="container max-w-5xl mx-auto text-center">
-          <h3 className="text-2xl font-bold mb-4 text-[oklch(0.75_0.15_85)]">
+          <h3 className="text-2xl font-bold mb-4 text-[oklch(0.75_0.15_85)] transition-all duration-300 hover:scale-105">
             Yhteys jakajaan
           </h3>
-          <p className="text-[oklch(0.65_0.03_85)]">
+          <p className="text-[oklch(0.65_0.03_85)] transition-all duration-300 hover:text-[oklch(0.75_0.03_85)]">
             Matilda Media – Lappeenranta, Suomi
           </p>
         </div>
