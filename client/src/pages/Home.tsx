@@ -7,97 +7,68 @@ import { toast } from "sonner";
 /**
  * Matilda Media - Casino-themed media production website
  * Design: Dark blue and gold casino aesthetic
- * Features: Coin flip, slot machine (email), wheel of fortune (messages), confetti
+ * Contact flow: Form hidden → 3 games (Wheel → Dice → Blackjack) → Formspree send
+ * Slot machine: coin flip → 777 reveals email
  */
 
 const SLOT_SYMBOLS = ['🍒', '🔔', '💎', 'BAR', '⭐', '🍋'];
 const WIN_SYMBOL = '7';
 
-// ─── Confetti ────────────────────────────────────────────────
-function Confetti({ active, duration = 6000 }: { active: boolean; duration?: number }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+// Formspree endpoint - replace with your own
+const FORMSPREE_URL = "https://formspree.io/f/xpwzgkdl";
 
+// ─── Confetti ────────────────────────────────────────────────
+function Confetti({ active, duration = 7000 }: { active: boolean; duration?: number }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     if (!active || !canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
     const colors = ['#D4AF37', '#FFD700', '#B8860B', '#DAA520', '#F0E68C', '#FF6B6B', '#4ECDC4', '#FF4444', '#44FF44'];
     const particles: Array<{
       x: number; y: number; vx: number; vy: number;
       color: string; w: number; h: number; rotation: number; rotSpeed: number;
       gravity: number; drag: number; wobble: number; wobbleSpeed: number;
     }> = [];
-
-    // Spawn particles in waves
     const spawnWave = () => {
       for (let i = 0; i < 80; i++) {
         particles.push({
-          x: Math.random() * canvas.width,
-          y: -20 - Math.random() * 300,
-          vx: (Math.random() - 0.5) * 8,
-          vy: Math.random() * 2 + 1,
+          x: Math.random() * canvas.width, y: -20 - Math.random() * 300,
+          vx: (Math.random() - 0.5) * 8, vy: Math.random() * 2 + 1,
           color: colors[Math.floor(Math.random() * colors.length)],
-          w: Math.random() * 10 + 4,
-          h: Math.random() * 6 + 2,
-          rotation: Math.random() * 360,
-          rotSpeed: (Math.random() - 0.5) * 12,
-          gravity: 0.03 + Math.random() * 0.02,
-          drag: 0.99,
-          wobble: Math.random() * 10,
-          wobbleSpeed: 0.05 + Math.random() * 0.1,
+          w: Math.random() * 10 + 4, h: Math.random() * 6 + 2,
+          rotation: Math.random() * 360, rotSpeed: (Math.random() - 0.5) * 12,
+          gravity: 0.03 + Math.random() * 0.02, drag: 0.99,
+          wobble: Math.random() * 10, wobbleSpeed: 0.05 + Math.random() * 0.1,
         });
       }
     };
-
     spawnWave();
-    const wave2 = setTimeout(spawnWave, 1500);
-    const wave3 = setTimeout(spawnWave, 3000);
-
-    let animationId: number;
-    const startTime = Date.now();
-
+    const w2 = setTimeout(spawnWave, 1500);
+    const w3 = setTimeout(spawnWave, 3000);
+    let animId: number;
+    const t0 = Date.now();
     const animate = () => {
-      const elapsed = Date.now() - startTime;
+      const el = Date.now() - t0;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      let anyVisible = false;
+      let vis = false;
       particles.forEach(p => {
-        if (p.y < canvas.height + 100) anyVisible = true;
-        p.wobble += p.wobbleSpeed;
-        p.vx += Math.sin(p.wobble) * 0.1;
-        p.vx *= p.drag;
-        p.vy += p.gravity;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.rotation += p.rotSpeed;
-
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate((p.rotation * Math.PI) / 180);
+        if (p.y < canvas.height + 100) vis = true;
+        p.wobble += p.wobbleSpeed; p.vx += Math.sin(p.wobble) * 0.1;
+        p.vx *= p.drag; p.vy += p.gravity; p.x += p.vx; p.y += p.vy; p.rotation += p.rotSpeed;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate((p.rotation * Math.PI) / 180);
         ctx.fillStyle = p.color;
-        ctx.globalAlpha = elapsed > duration - 1000 ? Math.max(0, (duration - elapsed) / 1000) : 1;
-        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-        ctx.restore();
+        ctx.globalAlpha = el > duration - 1000 ? Math.max(0, (duration - el) / 1000) : 1;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore();
       });
-
-      if (anyVisible && elapsed < duration) {
-        animationId = requestAnimationFrame(animate);
-      }
+      if (vis && el < duration) animId = requestAnimationFrame(animate);
     };
-
     animate();
-    return () => {
-      cancelAnimationFrame(animationId);
-      clearTimeout(wave2);
-      clearTimeout(wave3);
-    };
+    return () => { cancelAnimationFrame(animId); clearTimeout(w2); clearTimeout(w3); };
   }, [active, duration]);
-
   if (!active) return null;
   return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-[100]" />;
 }
@@ -106,183 +77,323 @@ function Confetti({ active, duration = 6000 }: { active: boolean; duration?: num
 function SlotReel({ spinning, finalSymbol, delay, isWin }: {
   spinning: boolean; finalSymbol: string; delay: number; isWin: boolean;
 }) {
-  const [displaySymbol, setDisplaySymbol] = useState('?');
+  const [display, setDisplay] = useState('?');
   const [isSpinning, setIsSpinning] = useState(false);
   const [stopped, setStopped] = useState(false);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
+  const ref = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => {
     if (spinning) {
-      setStopped(false);
-      setIsSpinning(true);
-      intervalRef.current = setInterval(() => {
-        const allSymbols = [...SLOT_SYMBOLS, WIN_SYMBOL];
-        setDisplaySymbol(allSymbols[Math.floor(Math.random() * allSymbols.length)]);
+      setStopped(false); setIsSpinning(true);
+      ref.current = setInterval(() => {
+        setDisplay([...SLOT_SYMBOLS, WIN_SYMBOL][Math.floor(Math.random() * 7)]);
       }, 80);
       setTimeout(() => {
-        if (intervalRef.current) clearInterval(intervalRef.current);
-        setDisplaySymbol(finalSymbol);
-        setIsSpinning(false);
-        setStopped(true);
+        if (ref.current) clearInterval(ref.current);
+        setDisplay(finalSymbol); setIsSpinning(false); setStopped(true);
       }, delay);
     }
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    return () => { if (ref.current) clearInterval(ref.current); };
   }, [spinning, finalSymbol, delay]);
-
   return (
-    <div className={`
-      w-16 h-20 sm:w-20 sm:h-24 md:w-24 md:h-28
-      bg-[oklch(0.08_0.02_250)]
-      border-2 rounded-lg
-      flex items-center justify-center
-      transition-all duration-300
+    <div className={`w-16 h-20 sm:w-20 sm:h-24 md:w-24 md:h-28 bg-[oklch(0.08_0.02_250)] border-2 rounded-lg flex items-center justify-center transition-all duration-300
       ${stopped && isWin ? 'border-red-500 shadow-[0_0_20px_rgba(220,20,60,0.6)]' : 'border-[oklch(0.35_0.06_250)]'}
-      ${isSpinning ? 'animate-pulse' : ''}
-    `}>
-      <span className={`
-        text-2xl sm:text-3xl md:text-4xl font-bold select-none
+      ${isSpinning ? 'animate-pulse' : ''}`}>
+      <span className={`text-2xl sm:text-3xl md:text-4xl font-bold select-none
         ${stopped && finalSymbol === WIN_SYMBOL ? 'text-red-500' : 'text-[oklch(0.75_0.15_85)]'}
-        ${isSpinning ? 'blur-[1px]' : ''}
-        transition-all duration-200
-      `}>
-        {displaySymbol}
+        ${isSpinning ? 'blur-[1px]' : ''} transition-all duration-200`}>
+        {display}
       </span>
     </div>
   );
 }
 
-// ─── Wheel of Fortune (SVG) ─────────────────────────────────
-function WheelOfFortune({ onResult, spinCount }: {
-  onResult: (won: boolean) => void;
-  spinCount: number;
-}) {
+// ─── Wheel of Fortune ────────────────────────────────────────
+function WheelOfFortune({ onResult, spinCount }: { onResult: (won: boolean) => void; spinCount: number }) {
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
 
   const spin = () => {
     if (spinning) return;
     setSpinning(true);
-
-    const spins = 5 + Math.random() * 3;
-    // First 2 spins: land on red (180-360 range = bottom half)
-    // 3rd spin: land on green (0-180 range = top half)
-    const isWin = spinCount >= 2;
+    const fullSpins = 5 + Math.random() * 3;
+    // The pointer is at top (12 o'clock = 0deg).
+    // SVG: Green is RIGHT half (path from 12→3→6 o'clock), Red is LEFT half (path from 12→9→6 o'clock).
+    // To land on RED: pointer must point at left half → final angle 180-360 range
+    // To land on GREEN: pointer must point at right half → final angle 0-180 range
+    // But since we rotate the wheel (not the pointer), we need the opposite:
+    // RED zone under pointer: wheel rotated so left half is at top → angle 225 ± 45
+    // GREEN zone under pointer: wheel rotated so right half is at top → angle 45 ± 45
+    const isWin = spinCount >= 2; // 3rd spin wins
+    // For RED (lose): rotate so red half ends up at pointer (top) → target 135-225
+    // For GREEN (win): rotate so green half ends up at pointer (top) → target 315-360 or 0-45
     const targetAngle = isWin
-      ? 45 + Math.random() * 90   // Green zone (top)
-      : 225 + Math.random() * 90; // Red zone (bottom)
-
-    const totalRotation = rotation + (360 * spins) + targetAngle;
-    setRotation(totalRotation);
-
-    setTimeout(() => {
-      setSpinning(false);
-      onResult(isWin);
-    }, 3500);
+      ? 340 + Math.random() * 40  // Green under pointer
+      : 135 + Math.random() * 90; // Red under pointer
+    const total = rotation + (360 * fullSpins) + targetAngle;
+    setRotation(total);
+    setTimeout(() => { setSpinning(false); onResult(isWin); }, 3500);
   };
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="relative w-48 h-48 sm:w-56 sm:h-56">
-        {/* Pointer at top */}
+      <div className="relative w-44 h-44 sm:w-52 sm:h-52">
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-          <div className="w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[20px] border-t-[oklch(0.75_0.15_85)]" />
+          <div className="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[18px] border-t-[oklch(0.75_0.15_85)]" />
         </div>
-
-        {/* Wheel */}
-        <svg
-          viewBox="0 0 200 200"
-          className="w-full h-full transition-transform duration-[3500ms] ease-out"
-          style={{ transform: `rotate(${rotation}deg)` }}
-        >
-          {/* Green half (top: 0-180deg) */}
+        <svg viewBox="0 0 200 200" className="w-full h-full transition-transform duration-[3500ms] ease-out"
+          style={{ transform: `rotate(${rotation}deg)` }}>
+          {/* Green = right half */}
           <path d="M 100 100 L 100 0 A 100 100 0 0 1 100 200 Z" fill="#22c55e" />
-          {/* Red half (bottom: 180-360deg) */}
+          {/* Red = left half */}
           <path d="M 100 100 L 100 200 A 100 100 0 0 1 100 0 Z" fill="#ef4444" />
-
-          {/* Gold border */}
           <circle cx="100" cy="100" r="98" fill="none" stroke="#D4AF37" strokeWidth="4" />
-          {/* Center divider */}
           <line x1="100" y1="0" x2="100" y2="200" stroke="#D4AF37" strokeWidth="3" />
-          {/* Center dot */}
           <circle cx="100" cy="100" r="8" fill="#D4AF37" />
           <circle cx="100" cy="100" r="5" fill="#1a1a2e" />
-
-          {/* Text on green half */}
-          <text x="145" y="95" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle" transform="rotate(-90, 145, 95)">
-            Viesti
-          </text>
-          <text x="145" y="115" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle" transform="rotate(-90, 145, 115)">
-            lähetetään
-          </text>
-
-          {/* Text on red half */}
-          <text x="55" y="95" fill="white" fontSize="10" fontWeight="bold" textAnchor="middle" transform="rotate(90, 55, 95)">
-            Viestiäsi ei
-          </text>
-          <text x="55" y="115" fill="white" fontSize="10" fontWeight="bold" textAnchor="middle" transform="rotate(90, 55, 115)">
-            lähetetä
-          </text>
+          {/* Green text (right side) */}
+          <text x="150" y="105" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">Viesti</text>
+          <text x="150" y="120" fill="white" fontSize="10" fontWeight="bold" textAnchor="middle">lähetetään</text>
+          {/* Red text (left side) */}
+          <text x="50" y="105" fill="white" fontSize="10" fontWeight="bold" textAnchor="middle">Ei lähetetä</text>
         </svg>
       </div>
-
-      <Button
-        onClick={spin}
-        disabled={spinning}
-        className="bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)]
-                 transition-all duration-300 hover:scale-105 font-bold text-lg px-8 py-3
-                 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-      >
+      <Button onClick={spin} disabled={spinning}
+        className="bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] transition-all duration-300 hover:scale-105 font-bold text-base px-6 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed">
         {spinning ? "Pyörii..." : "Pyöräytä!"}
       </Button>
     </div>
   );
 }
 
-// ─── Main Page ───────────────────────────────────────────────
+// ─── Dice Game ───────────────────────────────────────────────
+function DiceGame({ onResult, rollCount }: { onResult: (won: boolean) => void; rollCount: number }) {
+  const [dice, setDice] = useState([0, 0]);
+  const [rolling, setRolling] = useState(false);
+  const [result, setResult] = useState<'none' | 'win' | 'lose'>('none');
+
+  const diceEmojis: Record<number, string> = { 1: '⚀', 2: '⚁', 3: '⚂', 4: '⚃', 5: '⚄', 6: '⚅' };
+
+  const roll = () => {
+    if (rolling) return;
+    setRolling(true);
+    setResult('none');
+
+    // Animate dice rolling
+    let count = 0;
+    const interval = setInterval(() => {
+      setDice([Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1]);
+      count++;
+      if (count > 15) {
+        clearInterval(interval);
+        const isWin = rollCount >= 2; // 3rd roll wins
+        let d1: number, d2: number;
+        if (isWin) {
+          // Both even
+          const evens = [2, 4, 6];
+          d1 = evens[Math.floor(Math.random() * 3)];
+          d2 = evens[Math.floor(Math.random() * 3)];
+        } else {
+          // At least one odd
+          d1 = Math.floor(Math.random() * 6) + 1;
+          d2 = Math.floor(Math.random() * 6) + 1;
+          // Ensure at least one is odd
+          if (d1 % 2 === 0 && d2 % 2 === 0) {
+            d1 = d1 === 6 ? 5 : d1 + 1;
+          }
+        }
+        setDice([d1, d2]);
+        setRolling(false);
+        setResult(isWin ? 'win' : 'lose');
+        setTimeout(() => onResult(isWin), 800);
+      }
+    }, 80);
+  };
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <p className="text-xs sm:text-sm text-[oklch(0.55_0.03_85)] text-center">
+        Heitä tasanumerot molemmista nopista!
+      </p>
+      <div className="flex gap-4 sm:gap-6">
+        {dice.map((d, i) => (
+          <div key={i} className={`w-20 h-20 sm:w-24 sm:h-24 rounded-xl flex items-center justify-center text-4xl sm:text-5xl
+            bg-[oklch(0.10_0.02_250)] border-2 transition-all duration-300
+            ${rolling ? 'animate-bounce border-[oklch(0.75_0.15_85)]/50' : ''}
+            ${result === 'win' && !rolling ? 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.4)]' : ''}
+            ${result === 'lose' && !rolling ? 'border-red-500/50' : ''}
+            ${result === 'none' && !rolling ? 'border-[oklch(0.35_0.06_250)]' : ''}`}>
+            <span className={`select-none transition-all ${rolling ? 'blur-[1px]' : ''}`}>
+              {d > 0 ? diceEmojis[d] : '?'}
+            </span>
+          </div>
+        ))}
+      </div>
+      {result !== 'none' && !rolling && (
+        <p className={`text-sm font-semibold ${result === 'win' ? 'text-green-400' : 'text-red-400'}`}>
+          {result === 'win' ? `${dice[0]} & ${dice[1]} – Molemmat tasanumeroita!` : `${dice[0]} & ${dice[1]} – Ei tärpännyt!`}
+        </p>
+      )}
+      <Button onClick={roll} disabled={rolling}
+        className="bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] transition-all duration-300 hover:scale-105 font-bold text-base px-6 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed">
+        {rolling ? "Nopat pyörii..." : "Heitä nopat!"}
+      </Button>
+    </div>
+  );
+}
+
+// ─── Blackjack Game ──────────────────────────────────────────
+function BlackjackGame({ onResult, handCount }: { onResult: (won: boolean) => void; handCount: number }) {
+  const [playerCards, setPlayerCards] = useState<string[]>([]);
+  const [dealerCards, setDealerCards] = useState<string[]>([]);
+  const [phase, setPhase] = useState<'idle' | 'dealing' | 'result'>('idle');
+  const [won, setWon] = useState(false);
+
+  const suits = ['♠', '♥', '♦', '♣'];
+  const values = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+
+  const randomCard = () => {
+    const v = values[Math.floor(Math.random() * values.length)];
+    const s = suits[Math.floor(Math.random() * suits.length)];
+    return `${v}${s}`;
+  };
+
+  const deal = () => {
+    if (phase === 'dealing') return;
+    setPhase('dealing');
+    setWon(false);
+
+    const isWin = handCount >= 4; // 5th hand wins
+
+    if (isWin) {
+      // Player gets Blackjack (A + 10/J/Q/K)
+      const tens = ['10', 'J', 'Q', 'K'];
+      const pSuit1 = suits[Math.floor(Math.random() * 4)];
+      const pSuit2 = suits[Math.floor(Math.random() * 4)];
+      const pCards = [`A${pSuit1}`, `${tens[Math.floor(Math.random() * 4)]}${pSuit2}`];
+      // Dealer gets less (e.g. 18-20)
+      const dCards = [randomCard(), randomCard()];
+
+      setTimeout(() => setPlayerCards([pCards[0]]), 300);
+      setTimeout(() => setDealerCards(['🂠']), 600);
+      setTimeout(() => setPlayerCards(pCards), 900);
+      setTimeout(() => {
+        setDealerCards(dCards);
+        setWon(true);
+        setPhase('result');
+        setTimeout(() => onResult(true), 1000);
+      }, 1200);
+    } else {
+      // Player loses - dealer has better hand
+      const pCards = [randomCard(), randomCard()];
+      const dCards = [randomCard(), randomCard()];
+
+      setTimeout(() => setPlayerCards([pCards[0]]), 300);
+      setTimeout(() => setDealerCards(['🂠']), 600);
+      setTimeout(() => setPlayerCards(pCards), 900);
+      setTimeout(() => {
+        setDealerCards(dCards);
+        setWon(false);
+        setPhase('result');
+        setTimeout(() => onResult(false), 1000);
+      }, 1200);
+    }
+  };
+
+  const isRed = (card: string) => card.includes('♥') || card.includes('♦');
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <p className="text-xs sm:text-sm text-[oklch(0.55_0.03_85)] text-center">
+        Saat Blackjackin ja voitat talon!
+      </p>
+
+      {/* Dealer */}
+      <div className="text-center">
+        <p className="text-xs text-[oklch(0.55_0.03_85)] mb-2 uppercase tracking-wider">Talo</p>
+        <div className="flex gap-2 justify-center min-h-[4rem]">
+          {dealerCards.map((c, i) => (
+            <div key={i} className={`w-12 h-16 sm:w-14 sm:h-20 rounded-lg flex items-center justify-center text-lg sm:text-xl font-bold
+              ${c === '🂠' ? 'bg-blue-900 border-blue-700' : 'bg-white border-gray-300'}
+              border-2 transition-all duration-300 animate-fade-in`}>
+              <span className={isRed(c) ? 'text-red-600' : 'text-gray-900'}>{c}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* VS divider */}
+      {(playerCards.length > 0 || dealerCards.length > 0) && (
+        <div className="text-[oklch(0.75_0.15_85)] text-sm font-bold">VS</div>
+      )}
+
+      {/* Player */}
+      <div className="text-center">
+        <p className="text-xs text-[oklch(0.55_0.03_85)] mb-2 uppercase tracking-wider">Sinä</p>
+        <div className="flex gap-2 justify-center min-h-[4rem]">
+          {playerCards.map((c, i) => (
+            <div key={i} className={`w-12 h-16 sm:w-14 sm:h-20 rounded-lg flex items-center justify-center text-lg sm:text-xl font-bold
+              bg-white border-2 transition-all duration-300 animate-fade-in
+              ${won && phase === 'result' ? 'border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.4)]' : 'border-gray-300'}`}>
+              <span className={isRed(c) ? 'text-red-600' : 'text-gray-900'}>{c}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {phase === 'result' && (
+        <p className={`text-sm font-semibold ${won ? 'text-green-400' : 'text-red-400'}`}>
+          {won ? '🃏 BLACKJACK! Voitit talon!' : 'Talo voitti tällä kertaa...'}
+        </p>
+      )}
+
+      <Button onClick={deal} disabled={phase === 'dealing'}
+        className="bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] transition-all duration-300 hover:scale-105 font-bold text-base px-6 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed">
+        {phase === 'dealing' ? "Jaetaan..." : "Jaa kortit!"}
+      </Button>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MAIN PAGE
+// ═══════════════════════════════════════════════════════════════
 export default function Home() {
   const [viewCount, setViewCount] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
   const targetViews = 22000000;
   const animationDuration = 360000;
-
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  // Contact form
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [formVisible, setFormVisible] = useState(false);
 
-  // Coin flip
+  // Coin flip + Slot (for email reveal)
   const [coinPhase, setCoinPhase] = useState<'idle' | 'flipping' | 'landing' | 'done'>('idle');
-
-  // Slot machine (for email reveal)
   const [showSlot, setShowSlot] = useState(false);
   const [slotSpinning, setSlotSpinning] = useState(false);
   const [slotSpinCount, setSlotSpinCount] = useState(0);
   const [reelSymbols, setReelSymbols] = useState(['?', '?', '?']);
   const [slotWon, setSlotWon] = useState(false);
   const [leverPulled, setLeverPulled] = useState(false);
+  const [emailRevealed, setEmailRevealed] = useState(false);
 
-  // Wheel of fortune (for message sending)
-  const [showWheel, setShowWheel] = useState(false);
+  // 3-game sequence for message sending
+  const [gamePhase, setGamePhase] = useState<'none' | 'wheel' | 'dice' | 'blackjack' | 'sending' | 'sent'>('none');
   const [wheelSpinCount, setWheelSpinCount] = useState(0);
+  const [diceRollCount, setDiceRollCount] = useState(0);
+  const [bjHandCount, setBjHandCount] = useState(0);
 
   // Confetti
   const [showConfetti, setShowConfetti] = useState(false);
 
-  // Email revealed
-  const [emailRevealed, setEmailRevealed] = useState(false);
-
-  // ─── Effects ─────────────────────────────────────────────
+  // ─── View counter ────────────────────────────────────────
   useEffect(() => {
-    const startTime = Date.now();
+    const t0 = Date.now();
     const timer = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / animationDuration, 1);
-      if (progress < 1) {
-        const ease = 1 - Math.pow(1 - progress, 4);
-        setViewCount(Math.floor(targetViews * ease));
-      } else {
-        setViewCount(targetViews);
-        setIsAnimating(false);
-        clearInterval(timer);
-      }
+      const p = Math.min((Date.now() - t0) / animationDuration, 1);
+      if (p < 1) { setViewCount(Math.floor(targetViews * (1 - Math.pow(1 - p, 4)))); }
+      else { setViewCount(targetViews); setIsAnimating(false); clearInterval(timer); }
     }, 50);
     return () => clearInterval(timer);
   }, []);
@@ -299,17 +410,16 @@ export default function Home() {
     }
   }, [isAnimating]);
 
+  // ─── Countdown ───────────────────────────────────────────
   useEffect(() => {
     const calc = () => {
       const diff = new Date('2027-07-01T00:00:00').getTime() - Date.now();
-      if (diff > 0) {
-        setTimeLeft({
-          days: Math.floor(diff / 86400000),
-          hours: Math.floor((diff % 86400000) / 3600000),
-          minutes: Math.floor((diff % 3600000) / 60000),
-          seconds: Math.floor((diff % 60000) / 1000),
-        });
-      }
+      if (diff > 0) setTimeLeft({
+        days: Math.floor(diff / 86400000),
+        hours: Math.floor((diff % 86400000) / 3600000),
+        minutes: Math.floor((diff % 3600000) / 60000),
+        seconds: Math.floor((diff % 60000) / 1000),
+      });
     };
     calc();
     const id = setInterval(calc, 1000);
@@ -324,42 +434,25 @@ export default function Home() {
     if (coinPhase !== 'idle') return;
     setCoinPhase('flipping');
     setTimeout(() => setCoinPhase('landing'), 2000);
-    setTimeout(() => {
-      setCoinPhase('done');
-      setShowSlot(true);
-    }, 2800);
+    setTimeout(() => { setCoinPhase('done'); setShowSlot(true); }, 2800);
   };
 
   // ─── Slot machine ────────────────────────────────────────
   const handleSlotSpin = useCallback(() => {
     if (slotSpinning) return;
-    setSlotSpinning(true);
-    setLeverPulled(true);
+    setSlotSpinning(true); setLeverPulled(true);
     setTimeout(() => setLeverPulled(false), 500);
-
-    const newCount = slotSpinCount + 1;
-    setSlotSpinCount(newCount);
-
-    let symbols: string[];
-    if (newCount < 3) {
-      const losingSets = [
-        ['🍒', '🔔', '💎'], ['BAR', '⭐', '🍋'], ['🔔', '🍒', 'BAR'],
-        ['💎', '🍋', '⭐'], ['🍋', 'BAR', '🔔'],
-      ];
-      symbols = losingSets[Math.floor(Math.random() * losingSets.length)];
-    } else {
-      symbols = [WIN_SYMBOL, WIN_SYMBOL, WIN_SYMBOL];
-    }
+    const nc = slotSpinCount + 1;
+    setSlotSpinCount(nc);
+    const symbols = nc < 3
+      ? [['🍒','🔔','💎'],['BAR','⭐','🍋'],['🔔','🍒','BAR'],['💎','🍋','⭐']][Math.floor(Math.random()*4)]
+      : [WIN_SYMBOL, WIN_SYMBOL, WIN_SYMBOL];
     setReelSymbols(symbols);
-
     setTimeout(() => {
       setSlotSpinning(false);
-      if (newCount < 3) {
-        toast.error("Ei tärpännyt! Kokeile uudelleen 🎰", { duration: 3000 });
-      } else {
-        setSlotWon(true);
-        setShowConfetti(true);
-        setEmailRevealed(true);
+      if (nc < 3) { toast.error("Ei tärpännyt! Kokeile uudelleen 🎰", { duration: 3000 }); }
+      else {
+        setSlotWon(true); setShowConfetti(true); setEmailRevealed(true);
         toast.success("🎰 7 7 7 – JACKPOT! Sähköposti paljastettu!", { duration: 5000 });
         setTimeout(() => setShowConfetti(false), 7000);
         setTimeout(() => setShowSlot(false), 3500);
@@ -367,59 +460,96 @@ export default function Home() {
     }, 2600);
   }, [slotSpinning, slotSpinCount]);
 
-  // ─── Form submit → show wheel ────────────────────────────
+  // ─── Contact form submit → start game sequence ───────────
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setShowWheel(true);
+    setGamePhase('wheel');
+    setWheelSpinCount(0);
+    setDiceRollCount(0);
+    setBjHandCount(0);
   };
 
-  // ─── Wheel result ────────────────────────────────────────
+  // ─── Game handlers ───────────────────────────────────────
   const handleWheelResult = (won: boolean) => {
-    const newCount = wheelSpinCount + 1;
-    setWheelSpinCount(newCount);
-
-    if (!won) {
-      toast.error("Punainen! Viestiäsi ei lähetetty. Kokeile uudelleen!", { duration: 3000 });
+    setWheelSpinCount(p => p + 1);
+    if (won) {
+      toast.success("Vihreä! Onnenpyörä läpäisty!", { duration: 2000 });
+      setTimeout(() => setGamePhase('dice'), 1500);
     } else {
-      toast.success("Vihreä! Viesti lähetetään!", { duration: 3000 });
+      toast.error("Punainen! Kokeile uudelleen!", { duration: 2000 });
+    }
+  };
 
-      setTimeout(() => {
-        const subject = encodeURIComponent(`Yhteydenotto: ${formData.name}`);
-        const body = encodeURIComponent(`Nimi: ${formData.name}\nSähköposti: ${formData.email}\n\nViesti:\n${formData.message}`);
-        window.location.href = `mailto:vili@matilda.media?subject=${subject}&body=${body}`;
+  const handleDiceResult = (won: boolean) => {
+    setDiceRollCount(p => p + 1);
+    if (won) {
+      toast.success("Tasanumerot! Noppapeli läpäisty!", { duration: 2000 });
+      setTimeout(() => setGamePhase('blackjack'), 1500);
+    } else {
+      toast.error("Ei tärpännyt! Heitä uudelleen!", { duration: 2000 });
+    }
+  };
 
-        toast.success("Talletuksesi on saatu. Olen sinuun yhteydessä 1–37 arkipäivän kuluessa.", { duration: 6000 });
-        setFormData({ name: "", email: "", message: "" });
-        setShowWheel(false);
-        setWheelSpinCount(0);
-      }, 1500);
+  const handleBlackjackResult = (won: boolean) => {
+    setBjHandCount(p => p + 1);
+    if (won) {
+      toast.success("BLACKJACK! Viesti lähetetään!", { duration: 3000 });
+      setGamePhase('sending');
+      // Send via Formspree
+      fetch(FORMSPREE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ name: formData.name, email: formData.email, message: formData.message }),
+      }).then(res => {
+        if (res.ok) {
+          setShowConfetti(true);
+          setTimeout(() => setShowConfetti(false), 7000);
+          toast.success("Talletuksesi on saatu. Olen sinuun yhteydessä 1–37 arkipäivän kuluessa.", { duration: 8000 });
+          setFormData({ name: "", email: "", message: "" });
+          setGamePhase('sent');
+          setFormVisible(false);
+        } else {
+          toast.error("Viestin lähetys epäonnistui. Yritä myöhemmin.", { duration: 5000 });
+          setGamePhase('none');
+        }
+      }).catch(() => {
+        toast.error("Viestin lähetys epäonnistui. Yritä myöhemmin.", { duration: 5000 });
+        setGamePhase('none');
+      });
+    } else {
+      toast.error("Talo voitti! Kokeile uudelleen!", { duration: 2000 });
     }
   };
 
   // ─── Render ──────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[oklch(0.12_0.03_250)] to-[oklch(0.08_0.02_250)]">
+    <div className="min-h-screen bg-gradient-to-b from-[oklch(0.12_0.03_250)] to-[oklch(0.08_0.02_250)] relative">
       <Confetti active={showConfetti} duration={7000} />
 
-      {/* ═══ Hero ═══ */}
-      <section className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03] text-[oklch(0.75_0.15_85)]">
-          <div className="absolute top-20 left-10 text-6xl font-bold animate-spin-slow">7</div>
-          <div className="absolute top-1/4 right-20 text-7xl font-bold animate-pulse-slow">7</div>
-          <div className="absolute bottom-1/3 left-1/4 text-5xl font-bold animate-float">7</div>
-          <div className="absolute top-1/3 left-1/3 text-4xl font-bold tracking-wider animate-bounce-slow">BAR</div>
-          <div className="absolute bottom-1/4 right-1/3 text-5xl font-bold tracking-wider animate-pulse-slow">BAR</div>
-          <div className="absolute top-1/2 right-1/4 text-6xl animate-spin-reverse">🍒</div>
-          <div className="absolute bottom-40 left-20 text-5xl animate-float">🍒</div>
-          <div className="absolute top-40 right-40 text-6xl animate-pulse-slow">💎</div>
-          <div className="absolute bottom-1/2 left-[20%] text-5xl animate-spin-slow">💎</div>
-          <div className="absolute top-2/3 right-[20%] text-5xl animate-bounce-slow">🔔</div>
-          <div className="absolute top-[20%] left-[40%] text-4xl animate-float">🔔</div>
-          <div className="absolute bottom-[20%] right-[40%] text-6xl animate-spin-reverse">⭐</div>
-          <div className="absolute top-[16%] right-[16%] text-5xl animate-pulse-slow">⭐</div>
-        </div>
+      {/* ═══ Background slot symbols - covers entire page ═══ */}
+      <div className="fixed inset-0 opacity-[0.06] text-[oklch(0.75_0.15_85)] pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[5%] left-[5%] text-5xl sm:text-6xl font-bold animate-spin-slow">7</div>
+        <div className="absolute top-[15%] right-[10%] text-6xl sm:text-7xl font-bold animate-pulse-slow">7</div>
+        <div className="absolute top-[30%] left-[25%] text-4xl sm:text-5xl font-bold animate-float">7</div>
+        <div className="absolute top-[22%] left-[45%] text-3xl sm:text-4xl font-bold tracking-wider animate-bounce-slow">BAR</div>
+        <div className="absolute top-[40%] right-[20%] text-4xl sm:text-5xl font-bold tracking-wider animate-pulse-slow">BAR</div>
+        <div className="absolute top-[50%] right-[35%] text-5xl sm:text-6xl animate-spin-reverse">🍒</div>
+        <div className="absolute top-[60%] left-[8%] text-4xl sm:text-5xl animate-float">🍒</div>
+        <div className="absolute top-[12%] right-[30%] text-5xl sm:text-6xl animate-pulse-slow">💎</div>
+        <div className="absolute top-[45%] left-[15%] text-4xl sm:text-5xl animate-spin-slow">💎</div>
+        <div className="absolute top-[55%] right-[12%] text-4xl sm:text-5xl animate-bounce-slow">🔔</div>
+        <div className="absolute top-[70%] left-[35%] text-3xl sm:text-4xl animate-float">🔔</div>
+        <div className="absolute top-[75%] right-[25%] text-5xl sm:text-6xl animate-spin-reverse">⭐</div>
+        <div className="absolute top-[85%] left-[20%] text-4xl sm:text-5xl animate-pulse-slow">⭐</div>
+        <div className="absolute top-[90%] right-[8%] text-5xl sm:text-6xl font-bold animate-float">7</div>
+        <div className="absolute top-[80%] left-[50%] text-3xl sm:text-4xl font-bold tracking-wider animate-bounce-slow">BAR</div>
+        <div className="absolute top-[65%] left-[60%] text-4xl sm:text-5xl animate-spin-slow">🍒</div>
+        <div className="absolute top-[35%] left-[70%] text-4xl sm:text-5xl animate-pulse-slow">💎</div>
+      </div>
 
-        <div className="text-center z-10 max-w-4xl w-full">
+      {/* ═══ Hero ═══ */}
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 relative z-10">
+        <div className="text-center max-w-4xl w-full">
           <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-4 sm:mb-6 gold-gradient animate-fade-in px-4">
             MATILDA MEDIA
           </h1>
@@ -438,43 +568,60 @@ export default function Home() {
       </section>
 
       {/* ═══ Services ═══ */}
-      <section className="py-8 sm:py-12 md:py-16 px-4">
+      <section className="py-8 sm:py-12 md:py-16 px-4 relative z-10">
         <div className="container max-w-5xl mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-light text-center mb-10 sm:mb-14 text-[oklch(0.75_0.15_85)]" style={{ fontFamily: 'Montserrat, sans-serif', fontWeight: 300, letterSpacing: '0.02em' }}>
             Matilda Media jakaa pöydän: podcastit, klipit ja muun sisällön:
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 md:gap-12">
-            {[
-              { icon: 'M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z', title: 'Podcastit', desc: 'Ääni, joka kantaa – strategiset siirrot podcasteina', from: '0.45_0.15_280', to: '0.25_0.12_280', glow: 'rgba(138,43,226,0.5)', text: '0.85_0.08_280' },
-              { icon: 'M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z|M21 12a9 9 0 11-18 0 9 9 0 0118 0z', title: 'Klipit', desc: 'Nopeat voitot – iskevät klipit, jotka jäävät mieleen', from: '0.50_0.20_20', to: '0.30_0.18_20', glow: 'rgba(220,20,60,0.5)', text: '0.85_0.15_20' },
-              { icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z', title: 'Muu sisältö', desc: 'Jokeri hihassa – luovat ratkaisut kaikkiin mediatarpeisiin', from: '0.50_0.12_200', to: '0.30_0.10_200', glow: 'rgba(0,206,209,0.5)', text: '0.85_0.10_200' },
-            ].map((s, i) => (
-              <div key={i} className={`text-center group cursor-pointer ${i === 2 ? 'sm:col-span-2 lg:col-span-1' : ''}`}>
-                <div className="mb-6">
-                  <div className={`w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto rounded-2xl flex items-center justify-center
-                    bg-gradient-to-br from-[oklch(${s.from})] to-[oklch(${s.to})]
-                    transition-all duration-500 ease-out
-                    group-hover:scale-105 group-hover:shadow-[0_0_40px_${s.glow}]
-                    border border-[oklch(${s.from})]/30`}>
-                    <svg className={`w-16 h-16 sm:w-20 sm:h-20 text-[oklch(${s.text})] transition-transform duration-500 group-hover:scale-110`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      {s.icon.split('|').map((d, j) => (
-                        <path key={j} strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={d} />
-                      ))}
-                    </svg>
-                  </div>
+            {/* Podcasts - Purple */}
+            <div className="text-center group cursor-pointer">
+              <div className="mb-6">
+                <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto rounded-2xl flex items-center justify-center transition-all duration-500 ease-out group-hover:scale-105 border"
+                  style={{ background: 'linear-gradient(to bottom right, #7c3aed, #4c1d95)', borderColor: 'rgba(124,58,237,0.3)' }}>
+                  <svg className="w-16 h-16 sm:w-20 sm:h-20 transition-transform duration-500 group-hover:scale-110" fill="none" stroke="#c4b5fd" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
                 </div>
-                <h3 className={`text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-[oklch(${s.text})] transition-all duration-300 group-hover:scale-105`}>
-                  {s.title}
-                </h3>
-                <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light px-2">{s.desc}</p>
               </div>
-            ))}
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 transition-all duration-300 group-hover:scale-105" style={{ color: '#c4b5fd' }}>Podcastit</h3>
+              <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light px-2">Ääni, joka kantaa – strategiset siirrot podcasteina</p>
+            </div>
+
+            {/* Clips - Red/Crimson */}
+            <div className="text-center group cursor-pointer">
+              <div className="mb-6">
+                <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto rounded-2xl flex items-center justify-center transition-all duration-500 ease-out group-hover:scale-105 border"
+                  style={{ background: 'linear-gradient(to bottom right, #dc2626, #7f1d1d)', borderColor: 'rgba(220,38,38,0.3)' }}>
+                  <svg className="w-16 h-16 sm:w-20 sm:h-20 transition-transform duration-500 group-hover:scale-110" fill="none" stroke="#fca5a5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 transition-all duration-300 group-hover:scale-105" style={{ color: '#fca5a5' }}>Klipit</h3>
+              <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light px-2">Nopeat voitot – iskevät klipit, jotka jäävät mieleen</p>
+            </div>
+
+            {/* Content - Teal */}
+            <div className="text-center group cursor-pointer sm:col-span-2 lg:col-span-1">
+              <div className="mb-6">
+                <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto rounded-2xl flex items-center justify-center transition-all duration-500 ease-out group-hover:scale-105 border"
+                  style={{ background: 'linear-gradient(to bottom right, #0d9488, #134e4a)', borderColor: 'rgba(13,148,136,0.3)' }}>
+                  <svg className="w-16 h-16 sm:w-20 sm:h-20 transition-transform duration-500 group-hover:scale-110" fill="none" stroke="#99f6e4" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 transition-all duration-300 group-hover:scale-105" style={{ color: '#99f6e4' }}>Muu sisältö</h3>
+              <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light px-2">Jokeri hihassa – luovat ratkaisut kaikkiin mediatarpeisiin</p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ═══ About ═══ */}
-      <section className="py-16 sm:py-20 md:py-24 px-4 bg-gradient-to-b from-transparent to-[oklch(0.15_0.04_250)]">
+      <section className="py-16 sm:py-20 md:py-24 px-4 relative z-10">
         <div className="container max-w-3xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 text-[oklch(0.75_0.15_85)]">Tietoa minusta</h2>
           <div className="text-base sm:text-lg text-[oklch(0.65_0.03_85)] font-light space-y-4 sm:space-y-6 px-4">
@@ -486,7 +633,7 @@ export default function Home() {
       </section>
 
       {/* ═══ Countdown ═══ */}
-      <section className="py-12 sm:py-16 md:py-20 px-4">
+      <section className="py-12 sm:py-16 md:py-20 px-4 relative z-10">
         <div className="container max-w-4xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-light mb-3 sm:mb-4 text-[oklch(0.65_0.03_85)]">Uusi aikakausi alkaa pian...</h2>
           <p className="text-sm sm:text-base md:text-lg text-[oklch(0.55_0.03_85)] font-light mb-6 sm:mb-8 px-4">
@@ -510,78 +657,76 @@ export default function Home() {
       </section>
 
       {/* ═══ Contact ═══ */}
-      <section className="py-16 sm:py-20 md:py-24 px-4 border-t border-[oklch(0.75_0.15_85)]/20">
+      <section className="py-16 sm:py-20 md:py-24 px-4 border-t border-[oklch(0.75_0.15_85)]/20 relative z-10">
         <div className="container max-w-2xl mx-auto">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-4 sm:mb-6 text-[oklch(0.75_0.15_85)]">Yhteys jakajaan</h2>
 
           {/* Email reveal */}
           <div className="text-center mb-8 sm:mb-12">
             {!emailRevealed && coinPhase === 'idle' && (
-              <button
-                onClick={handleCoinFlip}
-                className="group inline-flex items-center gap-3 px-6 py-3 rounded-lg
-                         border-2 border-[oklch(0.75_0.15_85)]/40 
-                         bg-transparent hover:bg-[oklch(0.75_0.15_85)]/10
-                         transition-all duration-300 hover:scale-105 hover:border-[oklch(0.75_0.15_85)]"
-              >
+              <button onClick={handleCoinFlip}
+                className="group inline-flex items-center gap-3 px-6 py-3 rounded-lg border-2 border-[oklch(0.75_0.15_85)]/40 bg-transparent hover:bg-[oklch(0.75_0.15_85)]/10 transition-all duration-300 hover:scale-105 hover:border-[oklch(0.75_0.15_85)]">
                 <span className="text-3xl group-hover:animate-bounce">🪙</span>
-                <span className="text-[oklch(0.75_0.15_85)] font-semibold text-base sm:text-lg">
-                  Heitä kolikkoa paljastaaksesi sähköposti
-                </span>
+                <span className="text-[oklch(0.75_0.15_85)] font-semibold text-base sm:text-lg">Heitä kolikkoa paljastaaksesi sähköposti</span>
               </button>
             )}
-
             {(coinPhase === 'flipping' || coinPhase === 'landing') && (
               <div className="flex flex-col items-center gap-4 py-4">
-                <div className={`text-6xl sm:text-7xl ${coinPhase === 'flipping' ? 'animate-coin-spin' : 'animate-coin-land'}`}>
-                  🪙
-                </div>
-                <p className="text-[oklch(0.65_0.03_85)] text-sm">
-                  {coinPhase === 'flipping' ? 'Kolikko pyörii...' : 'Kolikko laskeutuu...'}
-                </p>
+                <div className={`text-6xl sm:text-7xl ${coinPhase === 'flipping' ? 'animate-coin-spin' : 'animate-coin-land'}`}>🪙</div>
+                <p className="text-[oklch(0.65_0.03_85)] text-sm">{coinPhase === 'flipping' ? 'Kolikko pyörii...' : 'Kolikko laskeutuu...'}</p>
               </div>
             )}
-
             {coinPhase === 'done' && !emailRevealed && !showSlot && (
               <div className="animate-fade-in">
                 <p className="text-[oklch(0.65_0.03_85)] mb-4">Kolikko tippui! Nyt tarvitset vielä jackpotin...</p>
-                <button
-                  onClick={() => setShowSlot(true)}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg
-                           border-2 border-[oklch(0.75_0.15_85)]/40 bg-transparent
-                           hover:bg-[oklch(0.75_0.15_85)]/10 transition-all duration-300 hover:scale-105"
-                >
+                <button onClick={() => setShowSlot(true)}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-[oklch(0.75_0.15_85)]/40 bg-transparent hover:bg-[oklch(0.75_0.15_85)]/10 transition-all duration-300 hover:scale-105">
                   <span className="text-2xl">🎰</span>
                   <span className="text-[oklch(0.75_0.15_85)] font-semibold">Avaa hedelmäpeli</span>
                 </button>
               </div>
             )}
-
             {emailRevealed && (
               <div className="animate-fade-in">
                 <p className="text-base sm:text-lg text-[oklch(0.65_0.03_85)]">
-                  Ota yhteyttä sähköpostitse:{' '}
-                  <a href="mailto:vili@matilda.media" className="text-[oklch(0.75_0.15_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors underline">
-                    vili@matilda.media
-                  </a>
+                  Ota yhteyttä sähköpostitse: <a href="mailto:vili@matilda.media" className="text-[oklch(0.75_0.15_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors underline">vili@matilda.media</a>
                 </p>
               </div>
             )}
           </div>
 
-          {/* Contact form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <Input type="text" placeholder="Nimi" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required
-              className="bg-[oklch(0.18_0.04_250)] border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.85_0.03_85)] placeholder:text-[oklch(0.55_0.03_85)] focus:border-[oklch(0.75_0.15_85)] focus:ring-[oklch(0.75_0.15_85)]" />
-            <Input type="email" placeholder="Sähköposti" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} required
-              className="bg-[oklch(0.18_0.04_250)] border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.85_0.03_85)] placeholder:text-[oklch(0.55_0.03_85)] focus:border-[oklch(0.75_0.15_85)] focus:ring-[oklch(0.75_0.15_85)]" />
-            <Textarea placeholder="Viesti" value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} required rows={5}
-              className="bg-[oklch(0.18_0.04_250)] border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.85_0.03_85)] placeholder:text-[oklch(0.55_0.03_85)] focus:border-[oklch(0.75_0.15_85)] focus:ring-[oklch(0.75_0.15_85)] resize-none" />
-            <Button type="submit"
-              className="w-full bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] font-semibold text-lg py-6">
-              Lähetä viesti
-            </Button>
-          </form>
+          {/* Contact form - hidden until button clicked */}
+          {!formVisible && gamePhase !== 'sent' && (
+            <div className="text-center">
+              <button onClick={() => setFormVisible(true)}
+                className="group inline-flex items-center gap-3 px-6 py-3 rounded-lg border-2 border-[oklch(0.75_0.15_85)]/40 bg-transparent hover:bg-[oklch(0.75_0.15_85)]/10 transition-all duration-300 hover:scale-105 hover:border-[oklch(0.75_0.15_85)]">
+                <span className="text-2xl">✉️</span>
+                <span className="text-[oklch(0.75_0.15_85)] font-semibold text-base sm:text-lg">Lähetä viesti Matilda Medialle</span>
+              </button>
+            </div>
+          )}
+
+          {gamePhase === 'sent' && (
+            <div className="text-center animate-fade-in">
+              <p className="text-[oklch(0.75_0.15_85)] text-lg font-semibold mb-2">🎉 Viesti lähetetty!</p>
+              <p className="text-[oklch(0.55_0.03_85)] text-sm">Talletuksesi on saatu. Olen sinuun yhteydessä 1–37 arkipäivän kuluessa.</p>
+            </div>
+          )}
+
+          {formVisible && gamePhase === 'none' && (
+            <form onSubmit={handleSubmit} className="space-y-6 animate-fade-in">
+              <Input type="text" placeholder="Nimi" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required
+                className="bg-[oklch(0.18_0.04_250)] border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.85_0.03_85)] placeholder:text-[oklch(0.55_0.03_85)] focus:border-[oklch(0.75_0.15_85)] focus:ring-[oklch(0.75_0.15_85)]" />
+              <Input type="email" placeholder="Sähköposti" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} required
+                className="bg-[oklch(0.18_0.04_250)] border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.85_0.03_85)] placeholder:text-[oklch(0.55_0.03_85)] focus:border-[oklch(0.75_0.15_85)] focus:ring-[oklch(0.75_0.15_85)]" />
+              <Textarea placeholder="Viesti" value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} required rows={5}
+                className="bg-[oklch(0.18_0.04_250)] border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.85_0.03_85)] placeholder:text-[oklch(0.55_0.03_85)] focus:border-[oklch(0.75_0.15_85)] focus:ring-[oklch(0.75_0.15_85)] resize-none" />
+              <Button type="submit"
+                className="w-full bg-[oklch(0.75_0.15_85)] text-[oklch(0.20_0.05_250)] hover:bg-[oklch(0.85_0.15_85)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] font-semibold text-lg py-6">
+                Lähetä viesti
+              </Button>
+            </form>
+          )}
         </div>
       </section>
 
@@ -589,38 +734,26 @@ export default function Home() {
       {showSlot && (
         <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4">
           <div className="relative max-w-sm w-full">
-            {/* Metal frame */}
             <div className="bg-gradient-to-b from-[#3a3a4a] via-[#2a2a3a] to-[#1a1a2a] rounded-2xl p-1 shadow-[0_0_60px_rgba(212,175,55,0.15)]">
               <div className="bg-gradient-to-b from-[oklch(0.16_0.04_250)] to-[oklch(0.10_0.03_250)] rounded-xl p-5 sm:p-6 border border-[oklch(0.75_0.15_85)]/20">
-
-                {/* Top decorative bar */}
                 <div className="flex items-center justify-center gap-2 mb-4">
                   <div className="h-0.5 flex-1 bg-gradient-to-r from-transparent to-[oklch(0.75_0.15_85)]/40" />
                   <h3 className="text-xl sm:text-2xl font-bold text-[oklch(0.75_0.15_85)] tracking-wider">JACKPOT</h3>
                   <div className="h-0.5 flex-1 bg-gradient-to-l from-transparent to-[oklch(0.75_0.15_85)]/40" />
                 </div>
-
-                <p className="text-center text-xs sm:text-sm text-[oklch(0.55_0.03_85)] mb-5">
-                  Kolme punaista seiskaa = sähköposti paljastuu
-                </p>
-
-                {/* Reels area with metal inset */}
+                <p className="text-center text-xs sm:text-sm text-[oklch(0.55_0.03_85)] mb-5">Kolme punaista seiskaa = sähköposti paljastuu</p>
                 <div className="bg-[oklch(0.06_0.01_250)] rounded-lg p-3 sm:p-4 mb-4 border border-[#3a3a4a]/50 shadow-inner">
                   <div className="flex justify-center gap-2 sm:gap-3">
                     <SlotReel spinning={slotSpinning} finalSymbol={reelSymbols[0]} delay={1200} isWin={slotWon} />
                     <SlotReel spinning={slotSpinning} finalSymbol={reelSymbols[1]} delay={1800} isWin={slotWon} />
                     <SlotReel spinning={slotSpinning} finalSymbol={reelSymbols[2]} delay={2400} isWin={slotWon} />
                   </div>
-
-                  {/* Win line */}
                   <div className="flex items-center mt-3">
                     <div className="w-3 h-3 rounded-full bg-[oklch(0.75_0.15_85)] shadow-[0_0_6px_rgba(212,175,55,0.5)]" />
                     <div className="flex-1 h-0.5 bg-[oklch(0.75_0.15_85)]/30" />
                     <div className="w-3 h-3 rounded-full bg-[oklch(0.75_0.15_85)] shadow-[0_0_6px_rgba(212,175,55,0.5)]" />
                   </div>
                 </div>
-
-                {/* Controls */}
                 {!slotWon && (
                   <div className="flex gap-3">
                     <Button onClick={handleSlotSpin} disabled={slotSpinning}
@@ -628,18 +761,14 @@ export default function Home() {
                       {slotSpinning ? "Pyörii..." : "VEDÄ"}
                     </Button>
                     {!slotSpinning && (
-                      <Button onClick={() => { setShowSlot(false); setSlotSpinCount(0); setReelSymbols(['?', '?', '?']); }}
-                        variant="outline" className="border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.75_0.15_85)] hover:bg-[oklch(0.75_0.15_85)]/10 py-3 sm:py-4">
-                        Sulje
-                      </Button>
+                      <Button onClick={() => { setShowSlot(false); setSlotSpinCount(0); setReelSymbols(['?','?','?']); }}
+                        variant="outline" className="border-[oklch(0.75_0.15_85)]/30 text-[oklch(0.75_0.15_85)] hover:bg-[oklch(0.75_0.15_85)]/10 py-3 sm:py-4">Sulje</Button>
                     )}
                   </div>
                 )}
-
                 {slotSpinCount > 0 && !slotWon && (
                   <p className="text-center text-[oklch(0.55_0.03_85)] text-xs sm:text-sm mt-3">Yritys {slotSpinCount}/3</p>
                 )}
-
                 {slotWon && (
                   <div className="text-center animate-fade-in py-2">
                     <p className="text-lg sm:text-xl font-bold text-red-500 mb-1">🎉 7 7 7 – JACKPOT! 🎉</p>
@@ -648,8 +777,6 @@ export default function Home() {
                 )}
               </div>
             </div>
-
-            {/* Lever on the right side */}
             <div className="absolute -right-6 sm:-right-8 top-1/2 -translate-y-1/2 flex flex-col items-center">
               <div className="w-3 sm:w-4 h-24 sm:h-32 bg-gradient-to-b from-[#555] to-[#333] rounded-full relative">
                 <div className={`absolute -top-4 sm:-top-5 left-1/2 -translate-x-1/2 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-b from-red-500 to-red-700 shadow-[0_0_10px_rgba(220,20,60,0.4)] border-2 border-red-400/50 transition-transform duration-500 ${leverPulled ? 'translate-y-16 sm:translate-y-20' : ''}`} />
@@ -660,27 +787,74 @@ export default function Home() {
         </div>
       )}
 
-      {/* ═══ Wheel of Fortune Modal ═══ */}
-      {showWheel && (
+      {/* ═══ Game Sequence Modal ═══ */}
+      {gamePhase !== 'none' && gamePhase !== 'sent' && (
         <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-b from-[oklch(0.18_0.04_250)] to-[oklch(0.12_0.03_250)] border-2 border-[oklch(0.75_0.15_85)]/40 rounded-2xl p-6 sm:p-8 max-w-sm w-full shadow-[0_0_60px_rgba(212,175,55,0.15)]">
-            <h3 className="text-xl sm:text-2xl font-bold text-[oklch(0.75_0.15_85)] text-center mb-2">Onnenpyörä</h3>
-            <p className="text-center text-xs sm:text-sm text-[oklch(0.55_0.03_85)] mb-6">
-              Pyöräytä vihreälle lähettääksesi viestisi!
-            </p>
+          <div className="bg-gradient-to-b from-[oklch(0.18_0.04_250)] to-[oklch(0.12_0.03_250)] border-2 border-[oklch(0.75_0.15_85)]/40 rounded-2xl p-5 sm:p-7 max-w-sm w-full shadow-[0_0_60px_rgba(212,175,55,0.15)]">
 
-            <WheelOfFortune onResult={handleWheelResult} spinCount={wheelSpinCount} />
+            {/* Progress indicator */}
+            <div className="flex items-center justify-center gap-2 mb-5">
+              {['Onnenpyörä', 'Nopat', 'Blackjack'].map((name, i) => {
+                const phases = ['wheel', 'dice', 'blackjack'];
+                const currentIdx = phases.indexOf(gamePhase === 'sending' ? 'blackjack' : gamePhase);
+                const done = i < currentIdx;
+                const active = i === currentIdx;
+                return (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className={`w-2.5 h-2.5 rounded-full transition-all duration-300
+                      ${done ? 'bg-green-500' : active ? 'bg-[oklch(0.75_0.15_85)] animate-pulse' : 'bg-[oklch(0.35_0.06_250)]'}`} />
+                    <span className={`text-xs hidden sm:inline ${active ? 'text-[oklch(0.75_0.15_85)]' : 'text-[oklch(0.45_0.03_85)]'}`}>{name}</span>
+                    {i < 2 && <div className="w-4 h-px bg-[oklch(0.35_0.06_250)]" />}
+                  </div>
+                );
+              })}
+            </div>
 
-            {wheelSpinCount > 0 && (
-              <p className="text-center text-[oklch(0.55_0.03_85)] text-xs sm:text-sm mt-4">Yritys {wheelSpinCount}/3</p>
+            {/* Game 1: Wheel */}
+            {gamePhase === 'wheel' && (
+              <>
+                <h3 className="text-lg sm:text-xl font-bold text-[oklch(0.75_0.15_85)] text-center mb-1">1/3 – Onnenpyörä</h3>
+                <p className="text-center text-xs text-[oklch(0.55_0.03_85)] mb-4">Pyöräytä vihreälle!</p>
+                <WheelOfFortune onResult={handleWheelResult} spinCount={wheelSpinCount} />
+                {wheelSpinCount > 0 && <p className="text-center text-[oklch(0.55_0.03_85)] text-xs mt-3">Yritys {wheelSpinCount}/3</p>}
+              </>
             )}
 
-            <div className="mt-4 text-center">
-              <button onClick={() => { setShowWheel(false); setWheelSpinCount(0); }}
-                className="text-[oklch(0.55_0.03_85)] text-sm hover:text-[oklch(0.75_0.15_85)] transition-colors underline">
-                Peruuta
-              </button>
-            </div>
+            {/* Game 2: Dice */}
+            {gamePhase === 'dice' && (
+              <>
+                <h3 className="text-lg sm:text-xl font-bold text-[oklch(0.75_0.15_85)] text-center mb-1">2/3 – Noppapeli</h3>
+                <DiceGame onResult={handleDiceResult} rollCount={diceRollCount} />
+                {diceRollCount > 0 && <p className="text-center text-[oklch(0.55_0.03_85)] text-xs mt-3">Yritys {diceRollCount}/3</p>}
+              </>
+            )}
+
+            {/* Game 3: Blackjack */}
+            {gamePhase === 'blackjack' && (
+              <>
+                <h3 className="text-lg sm:text-xl font-bold text-[oklch(0.75_0.15_85)] text-center mb-1">3/3 – Blackjack</h3>
+                <BlackjackGame onResult={handleBlackjackResult} handCount={bjHandCount} />
+                {bjHandCount > 0 && <p className="text-center text-[oklch(0.55_0.03_85)] text-xs mt-3">Käsi {bjHandCount}/5</p>}
+              </>
+            )}
+
+            {/* Sending state */}
+            {gamePhase === 'sending' && (
+              <div className="text-center py-8">
+                <div className="text-4xl mb-4 animate-bounce">📨</div>
+                <p className="text-[oklch(0.75_0.15_85)] font-semibold">Lähetetään viestiä...</p>
+              </div>
+            )}
+
+            {/* Cancel */}
+            {gamePhase !== 'sending' && (
+              <div className="mt-4 text-center">
+                <button onClick={() => { setGamePhase('none'); setWheelSpinCount(0); setDiceRollCount(0); setBjHandCount(0); }}
+                  className="text-[oklch(0.55_0.03_85)] text-sm hover:text-[oklch(0.75_0.15_85)] transition-colors underline">
+                  Peruuta
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
