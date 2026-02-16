@@ -312,7 +312,7 @@ export default function Home() {
             <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[oklch(0.75_0.15_85)] mb-3 tabular-nums">
               {fmt(viewCount)}
             </div>
-            <div className="text-sm sm:text-base md:text-lg text-[oklch(0.65_0.03_85)] font-light">
+            <div className="text-sm sm:text-base md:text-lg text-[oklch(0.65_0.03_85)] font-light" style={{fontSize: '16px'}}>
               Orgaanista näyttökertaa asiakkaideni sosiaalisen median kanavoissa,<br className="hidden sm:block" /> joihin sinäkin olet varmasti törmännyt.
             </div>
           </div>
@@ -337,7 +337,7 @@ export default function Home() {
                 </div>
               </div>
               <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 transition-all duration-300 group-hover:scale-105" style={{ color: '#c4b5fd' }}>Podcastit</h3>
-              <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light px-2">Ääni, joka kantaa – strategiset siirrot podcasteina</p>
+              <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light px-2" style={{fontSize: '16px'}}>Ääni, joka kantaa – strategiset siirrot podcasteina</p>
             </div>
 
             {/* Clips - Red/Crimson */}
@@ -352,7 +352,7 @@ export default function Home() {
                 </div>
               </div>
               <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 transition-all duration-300 group-hover:scale-105" style={{ color: '#fca5a5' }}>Klipit</h3>
-              <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light px-2">Nopeat voitot – iskevät klipit, jotka jäävät mieleen</p>
+              <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light px-2" style={{fontSize: '16px'}}>Nopeat voitot – iskevät klipit, jotka jäävät mieleen</p>
             </div>
 
             {/* Content - Teal */}
@@ -366,7 +366,7 @@ export default function Home() {
                 </div>
               </div>
               <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 transition-all duration-300 group-hover:scale-105" style={{ color: '#99f6e4' }}>Muu sisältö</h3>
-              <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light px-2">Jokeri hihassa – luovat ratkaisut kaikkiin mediatarpeisiin</p>
+              <p className="text-sm sm:text-base text-[oklch(0.65_0.03_85)] font-light px-2" style={{fontSize: '16px'}}>Jokeri hihassa – luovat ratkaisut kaikkiin mediatarpeisiin</p>
             </div>
           </div>
         </div>
@@ -375,7 +375,7 @@ export default function Home() {
       {/* ═══ About ═══ */}
       <section className="py-16 sm:py-20 md:py-24 px-4 relative z-10">
         <div className="container max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 text-[oklch(0.75_0.15_85)]">Tietoa minusta</h2>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 text-[oklch(0.75_0.15_85)]">Tietoa Matilda Mediasta:</h2>
           <div className="text-base sm:text-lg text-[oklch(0.65_0.03_85)] font-light space-y-4 sm:space-y-6 px-4">
             <p>Matilda Media on erikoistunut uhkapeliteemaiseen mediaan: podcasteihin, klippeihin, äänityksiin, videoihin ja valokuviin, jotka resonoivat yleisön kanssa.</p>
             <p>Yli 22 miljoonaa orgaanista näyttökertaa kotiuttavat sen, että me osaamme luoda sisältöä, joka leviää ja jää mieleen.</p>
@@ -404,7 +404,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <p className="text-xs sm:text-sm text-[oklch(0.45_0.03_85)] font-light italic">Oletko valmis?</p>
+          <p className="text-xs sm:text-sm text-[oklch(0.45_0.03_85)] font-light italic" style={{fontSize: '13px'}}>Oletko valmis?</p>
         </div>
       </section>
 
