@@ -102,58 +102,91 @@ function SlotReel({ spinning, finalSymbol, delay, isWin }: {
 }
 
 // ─── Wheel of Fortune (TRUE RANDOM) ─────────────────────────
+// SVG Layout:
+//   The GREEN half is drawn as a semicircle on the RIGHT side of the SVG (center of green = 90° in SVG space).
+//   The RED half is drawn as a semicircle on the LEFT side of the SVG (center of red = 270° in SVG space).
+//   The pointer sits at the TOP of the wheel (12 o'clock = 0° in SVG space).
+//
+// How CSS rotation works:
+//   CSS `rotate(Xdeg)` rotates the entire SVG clockwise by X degrees.
+//   To bring the GREEN center (90° in SVG) under the pointer (0°), we need to rotate the wheel by -90° (or +270°).
+//   To bring the RED center (270° in SVG) under the pointer (0°), we need to rotate the wheel by -270° (or +90°).
+//
+// So:
+//   WIN (green under pointer): final normalized angle should be in range 225°–315° (center 270°)
+//   LOSE (red under pointer):  final normalized angle should be in range 45°–135° (center 90°)
+//   We add a safety margin of 15° from the divider lines to avoid ambiguity.
+
 function WheelOfFortune({ onResult }: { onResult: (won: boolean) => void }) {
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
+  const [lastResult, setLastResult] = useState<'none' | 'win' | 'lose'>('none');
 
   const spin = () => {
     if (spinning) return;
     setSpinning(true);
+    setLastResult('none');
 
     // TRUE RANDOM - 50/50 chance every spin
     const isWin = Math.random() < 0.5;
 
-    const fullSpins = 5 + Math.random() * 3;
-    // Wheel layout: Green = right half (0-180° from top clockwise), Red = left half (180-360°)
-    // Pointer at top. We rotate the wheel, so:
-    // To land on GREEN: final position needs green under pointer → wheel angle 315-405 (normalized 315-360 + 0-45)
-    // To land on RED: final position needs red under pointer → wheel angle 135-225
-    const targetAngle = isWin
-      ? 330 + Math.random() * 60   // Green under pointer (right half at top)
-      : 150 + Math.random() * 60;  // Red under pointer (left half at top)
+    const fullSpins = 6 + Math.floor(Math.random() * 3); // 6-8 full rotations
+    
+    // Calculate target angle (where the wheel stops, normalized 0-360)
+    // GREEN half center is at SVG 90° → to put it under pointer, wheel must rotate 270° 
+    // RED half center is at SVG 270° → to put it under pointer, wheel must rotate 90°
+    let targetAngle: number;
+    if (isWin) {
+      // Land on GREEN: normalized angle between 240° and 300° (center 270°, ±30° with margin)
+      targetAngle = 240 + Math.random() * 60;
+    } else {
+      // Land on RED: normalized angle between 60° and 120° (center 90°, ±30° with margin)
+      targetAngle = 60 + Math.random() * 60;
+    }
+    
     const total = rotation + (360 * fullSpins) + targetAngle;
     setRotation(total);
-    setTimeout(() => { setSpinning(false); onResult(isWin); }, 4000);
+    
+    setTimeout(() => {
+      setSpinning(false);
+      setLastResult(isWin ? 'win' : 'lose');
+      onResult(isWin);
+    }, 4000);
   };
 
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative w-48 h-48 sm:w-56 sm:h-56">
-        {/* Pointer */}
+        {/* Pointer at top */}
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
           <div className="w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[22px] border-t-[oklch(0.75_0.15_85)] drop-shadow-[0_2px_4px_rgba(212,175,55,0.6)]" />
         </div>
         <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-[0_0_20px_rgba(212,175,55,0.2)]"
           style={{ transform: `rotate(${rotation}deg)`, transition: spinning ? 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none' }}>
-          {/* Green = right half (clockwise from top) */}
+          {/* GREEN = RIGHT half of SVG (clockwise arc from top-center to bottom-center via right) */}
           <path d="M 100 100 L 100 0 A 100 100 0 0 1 100 200 Z" fill="#16a34a" />
-          {/* Red = left half */}
+          {/* RED = LEFT half of SVG (clockwise arc from bottom-center to top-center via left) */}
           <path d="M 100 100 L 100 200 A 100 100 0 0 1 100 0 Z" fill="#dc2626" />
           {/* Gold border */}
           <circle cx="100" cy="100" r="98" fill="none" stroke="#D4AF37" strokeWidth="4" />
-          {/* Divider line */}
+          {/* Divider line (vertical) */}
           <line x1="100" y1="0" x2="100" y2="200" stroke="#D4AF37" strokeWidth="3" />
           {/* Center hub */}
           <circle cx="100" cy="100" r="10" fill="#D4AF37" />
           <circle cx="100" cy="100" r="6" fill="#1a1a2e" />
-          {/* Green text (right side) */}
+          {/* Green text (right side, centered at x=150) */}
           <text x="150" y="95" fill="white" fontSize="12" fontWeight="bold" textAnchor="middle">Yhteystiedot</text>
           <text x="150" y="112" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">paljastetaan</text>
-          {/* Red text (left side) */}
+          {/* Red text (left side, centered at x=50) */}
           <text x="50" y="95" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">Ei</text>
           <text x="50" y="112" fill="white" fontSize="11" fontWeight="bold" textAnchor="middle">tällä kertaa</text>
         </svg>
       </div>
+      {lastResult !== 'none' && (
+        <p className={`text-sm font-semibold ${lastResult === 'win' ? 'text-green-400' : 'text-red-400'}`}>
+          {lastResult === 'win' ? '🎉 Vihreä – voitit!' : '❌ Punainen – ei tällä kertaa'}
+        </p>
+      )}
       <Button onClick={spin} disabled={spinning}
         className="bg-gradient-to-b from-[oklch(0.80_0.15_85)] to-[oklch(0.65_0.15_85)] text-[oklch(0.15_0.05_250)] hover:from-[oklch(0.85_0.15_85)] hover:to-[oklch(0.70_0.15_85)] transition-all duration-300 hover:scale-105 font-bold text-base px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_4px_12px_rgba(212,175,55,0.3)]">
         {spinning ? "Pyörii..." : "Pyöräytä!"}
