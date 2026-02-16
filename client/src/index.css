@@ -55,14 +55,14 @@
 
 :root {
   /* Casino theme: Deep navy blue and warm gold */
-  --primary: oklch(0.45 0.08 250); /* Deep navy blue */
-  --primary-foreground: oklch(0.95 0.02 85); /* Warm gold/cream */
+  --primary: oklch(0.45 0.08 250);
+  --primary-foreground: oklch(0.95 0.02 85);
   --sidebar-primary: oklch(0.50 0.08 250);
   --sidebar-primary-foreground: oklch(0.95 0.02 85);
   
   /* Gold accents */
-  --accent: oklch(0.75 0.15 85); /* Rich gold */
-  --accent-foreground: oklch(0.20 0.05 250); /* Dark navy for contrast */
+  --accent: oklch(0.75 0.15 85);
+  --accent-foreground: oklch(0.20 0.05 250);
   
   --chart-1: oklch(0.65 0.12 85);
   --chart-2: oklch(0.55 0.10 250);
@@ -72,25 +72,25 @@
   
   --radius: 0.5rem;
   
-  /* Dark theme base */
-  --background: oklch(0.12 0.03 250); /* Very dark navy */
-  --foreground: oklch(0.95 0.02 85); /* Warm cream/gold */
-  --card: oklch(0.18 0.04 250); /* Dark navy card */
+  /* Slightly lighter dark theme base for better emoji visibility */
+  --background: oklch(0.16 0.04 250);
+  --foreground: oklch(0.95 0.02 85);
+  --card: oklch(0.20 0.04 250);
   --card-foreground: oklch(0.95 0.02 85);
-  --popover: oklch(0.18 0.04 250);
+  --popover: oklch(0.20 0.04 250);
   --popover-foreground: oklch(0.95 0.02 85);
-  --secondary: oklch(0.25 0.05 250); /* Medium navy */
+  --secondary: oklch(0.27 0.05 250);
   --secondary-foreground: oklch(0.90 0.03 85);
-  --muted: oklch(0.22 0.04 250);
+  --muted: oklch(0.24 0.04 250);
   --muted-foreground: oklch(0.65 0.03 85);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.75 0.15 85 / 30%); /* Gold border with transparency */
+  --border: oklch(0.75 0.15 85 / 30%);
   --input: oklch(0.30 0.05 250);
-  --ring: oklch(0.75 0.15 85); /* Gold ring */
-  --sidebar: oklch(0.15 0.03 250);
+  --ring: oklch(0.75 0.15 85);
+  --sidebar: oklch(0.18 0.03 250);
   --sidebar-foreground: oklch(0.95 0.02 85);
-  --sidebar-accent: oklch(0.25 0.05 250);
+  --sidebar-accent: oklch(0.27 0.05 250);
   --sidebar-accent-foreground: oklch(0.95 0.02 85);
   --sidebar-border: oklch(0.75 0.15 85 / 20%);
   --sidebar-ring: oklch(0.75 0.15 85);
@@ -162,137 +162,104 @@
 
   /* Custom animations */
   @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes spin-slow {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 
   @keyframes pulse-slow {
-    0%, 100% {
-      opacity: 0.05;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.1;
-      transform: scale(1.05);
-    }
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.08); }
   }
 
   @keyframes bounce-slow {
-    0%, 100% {
-      transform: translateY(0) rotate(-12deg);
-    }
-    50% {
-      transform: translateY(-10px) rotate(-12deg);
-    }
-  }
-
-  .animate-fade-in {
-    animation: fade-in 1s ease-out;
-  }
-
-  .animate-fade-in-delay {
-    animation: fade-in 1s ease-out 0.3s both;
-  }
-
-  .animate-fade-in-delay-2 {
-    animation: fade-in 1s ease-out 0.6s both;
-  }
-
-  .animate-spin-slow {
-    animation: spin-slow 20s linear infinite;
-  }
-
-  .animate-pulse-slow {
-    animation: pulse-slow 4s ease-in-out infinite;
-  }
-
-  .animate-bounce-slow {
-    animation: bounce-slow 3s ease-in-out infinite;
+    0%, 100% { transform: translateY(0) rotate(-12deg); }
+    50% { transform: translateY(-15px) rotate(-12deg); }
   }
 
   @keyframes spin-reverse {
-    from {
-      transform: rotate(360deg);
-    }
-    to {
-      transform: rotate(0deg);
-    }
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
   }
 
   @keyframes float {
-    0%, 100% {
-      transform: translateY(0) rotate(45deg);
-    }
-    50% {
-      transform: translateY(-20px) rotate(45deg);
-    }
+    0%, 100% { transform: translateY(0) rotate(8deg); }
+    50% { transform: translateY(-25px) rotate(-8deg); }
   }
 
-  .animate-spin-reverse {
-    animation: spin-reverse 15s linear infinite;
-  }
+  .animate-fade-in { animation: fade-in 1s ease-out; }
+  .animate-fade-in-delay { animation: fade-in 1s ease-out 0.3s both; }
+  .animate-fade-in-delay-2 { animation: fade-in 1s ease-out 0.6s both; }
+  .animate-spin-slow { animation: spin-slow 25s linear infinite; }
+  .animate-pulse-slow { animation: pulse-slow 5s ease-in-out infinite; }
+  .animate-bounce-slow { animation: bounce-slow 4s ease-in-out infinite; }
+  .animate-spin-reverse { animation: spin-reverse 20s linear infinite; }
+  .animate-float { animation: float 6s ease-in-out infinite; }
 
-  .animate-float {
-    animation: float 5s ease-in-out infinite;
-  }
-
-  /* Coin flip animation */
-  @keyframes coin-spin {
+  /* ─── Coin flip animation: higher arc, more spins, realistic physics ─── */
+  @keyframes coin-flip {
     0% {
-      transform: translateY(0) rotateY(0deg) scale(1);
+      transform: translateY(0) rotateX(0deg) rotateY(0deg) scale(1);
+      filter: brightness(1);
     }
-    25% {
-      transform: translateY(-80px) rotateY(720deg) scale(1.3);
+    10% {
+      transform: translateY(-60px) rotateX(180deg) rotateY(90deg) scale(1.15);
+      filter: brightness(1.2);
+    }
+    20% {
+      transform: translateY(-140px) rotateX(540deg) rotateY(180deg) scale(1.25);
+      filter: brightness(1.4);
+    }
+    35% {
+      transform: translateY(-200px) rotateX(1080deg) rotateY(360deg) scale(1.3);
+      filter: brightness(1.3);
     }
     50% {
-      transform: translateY(-120px) rotateY(1440deg) scale(1.2);
+      transform: translateY(-180px) rotateX(1620deg) rotateY(540deg) scale(1.25);
+      filter: brightness(1.2);
     }
-    75% {
-      transform: translateY(-60px) rotateY(2160deg) scale(1.1);
+    65% {
+      transform: translateY(-120px) rotateX(2160deg) rotateY(720deg) scale(1.15);
+      filter: brightness(1.1);
+    }
+    80% {
+      transform: translateY(-40px) rotateX(2700deg) rotateY(900deg) scale(1.05);
+      filter: brightness(1);
+    }
+    90% {
+      transform: translateY(10px) rotateX(3060deg) rotateY(1020deg) scale(0.98);
+      filter: brightness(0.95);
+    }
+    95% {
+      transform: translateY(-8px) rotateX(3240deg) rotateY(1080deg) scale(1.02);
+      filter: brightness(1);
     }
     100% {
-      transform: translateY(0) rotateY(2880deg) scale(1);
+      transform: translateY(0) rotateX(3420deg) rotateY(1170deg) scale(1);
+      filter: brightness(1);
     }
   }
 
   @keyframes coin-land {
-    0% {
-      transform: translateY(0) rotateY(0deg) scale(1);
-    }
-    30% {
-      transform: translateY(-20px) rotateY(180deg) scale(1.1);
-    }
-    60% {
-      transform: translateY(10px) rotateY(360deg) scale(0.95);
-    }
-    80% {
-      transform: translateY(-5px) rotateY(540deg) scale(1.02);
-    }
-    100% {
-      transform: translateY(0) rotateY(720deg) scale(1);
-    }
+    0% { transform: translateY(0) rotateY(0deg) scale(1); }
+    25% { transform: translateY(-15px) rotateY(180deg) scale(1.08); }
+    50% { transform: translateY(8px) rotateY(360deg) scale(0.96); }
+    70% { transform: translateY(-4px) rotateY(480deg) scale(1.02); }
+    85% { transform: translateY(2px) rotateY(540deg) scale(0.99); }
+    100% { transform: translateY(0) rotateY(600deg) scale(1); }
   }
 
-  .animate-coin-spin {
-    animation: coin-spin 2s ease-in-out;
+  .animate-coin-flip {
+    animation: coin-flip 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    perspective: 800px;
   }
 
   .animate-coin-land {
-    animation: coin-land 0.8s ease-out;
+    animation: coin-land 1s ease-out;
+    perspective: 800px;
   }
 }
