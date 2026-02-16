@@ -411,7 +411,7 @@ export default function Home() {
       {/* ═══ Contact ═══ */}
       <section className="py-16 sm:py-20 md:py-24 px-4 border-t border-[oklch(0.75_0.15_85)]/20 relative z-10">
         <div className="container max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 text-[oklch(0.75_0.15_85)]">Yhteys jakajaan</h2>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 text-[oklch(0.75_0.15_85)]">Yhteystiedot</h2>
 
           {/* Phase: idle - show coin flip button */}
           {contactPhase === 'idle' && (
@@ -453,7 +453,7 @@ export default function Home() {
           {/* Phase: revealed - show email */}
           {contactPhase === 'revealed' && (
             <div className="animate-fade-in">
-              <p className="text-xl sm:text-2xl text-[oklch(0.75_0.15_85)] font-semibold mb-4">🎉 Yhteystiedot paljastettu!</p>
+              <p className="text-xl sm:text-2xl text-[oklch(0.75_0.15_85)] font-semibold mb-4">🎉 Yhteystiedot paljastettu! Laita sähköpostia tulemaan:</p>
               <a href="mailto:vili@matilda.media"
                 className="inline-block text-lg sm:text-xl text-[oklch(0.85_0.15_85)] hover:text-[oklch(0.95_0.15_85)] transition-all duration-300 underline decoration-[oklch(0.75_0.15_85)]/50 hover:decoration-[oklch(0.75_0.15_85)] hover:scale-105">
                 vili@matilda.media
