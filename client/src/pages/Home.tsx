@@ -137,11 +137,13 @@ function WheelOfFortune({ onResult }: { onResult: (won: boolean) => void }) {
     // RED half center is at SVG 270° → to put it under pointer, wheel must rotate 90°
     let targetAngle: number;
     if (isWin) {
-      // Land on GREEN: pointer must point at green (right side of SVG)
-      targetAngle = 60 + Math.random() * 60;  // 60°-120° range
-    } else {
-      // Land on RED: pointer must point at red (left side of SVG)
+      // KORJATTU: Jotta vihreä (oikea puoli) osuu ylös,
+      // rengasta täytyy pyörittää 240-300 astetta.
       targetAngle = 240 + Math.random() * 60; // 240°-300° range
+    } else {
+      // KORJATTU: Jotta punainen (vasen puoli) osuu ylös,
+      // rengasta täytyy pyörittää 60-120 astetta.
+      targetAngle = 60 + Math.random() * 60;  // 60°-120° range
     }
     
     const total = rotation + (360 * fullSpins) + targetAngle;
