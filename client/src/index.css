@@ -263,3 +263,11 @@
     perspective: 800px;
   }
 }
+
+  /* iOS/Safari-specific dimming for background symbols */
+  @supports (-webkit-touch-callout: none) {
+    /* Target iOS/Safari devices */
+    .ios-symbol {
+      opacity: 0.3 !important;
+    }
+  }

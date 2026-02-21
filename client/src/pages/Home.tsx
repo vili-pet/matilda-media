@@ -308,30 +308,30 @@ export default function Home() {
       <Confetti active={showConfetti} duration={7000} />
 
       {/* ═══ Background slot symbols - covers entire page ═══ */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 ios-dimmed-bg">
         {/* More visible, varied slot symbols with gold tint */}
-        <div className="absolute top-[3%] left-[3%] text-5xl sm:text-7xl font-bold animate-spin-slow text-amber-500/[0.08]">7</div>
-        <div className="absolute top-[8%] right-[8%] text-6xl sm:text-8xl font-bold animate-pulse-slow text-amber-400/[0.07]">7</div>
-        <div className="absolute top-[18%] left-[20%] text-4xl sm:text-6xl font-bold animate-float text-red-500/[0.06]">7</div>
-        <div className="absolute top-[25%] right-[25%] text-3xl sm:text-5xl font-bold tracking-wider animate-bounce-slow text-amber-500/[0.07]">BAR</div>
-        <div className="absolute top-[35%] left-[8%] text-4xl sm:text-6xl font-bold tracking-wider animate-pulse-slow text-amber-400/[0.06]">BAR</div>
-        <div className="absolute top-[15%] left-[55%] text-5xl sm:text-6xl animate-spin-reverse text-red-400/[0.07]">🍒</div>
-        <div className="absolute top-[42%] right-[5%] text-4xl sm:text-6xl animate-float text-red-400/[0.08]">🍒</div>
-        <div className="absolute top-[10%] left-[75%] text-5xl sm:text-7xl animate-pulse-slow text-cyan-400/[0.06]">💎</div>
-        <div className="absolute top-[48%] left-[18%] text-4xl sm:text-5xl animate-spin-slow text-cyan-300/[0.07]">💎</div>
-        <div className="absolute top-[30%] right-[12%] text-4xl sm:text-6xl animate-bounce-slow text-yellow-400/[0.07]">🔔</div>
-        <div className="absolute top-[55%] left-[40%] text-3xl sm:text-5xl animate-float text-yellow-300/[0.06]">🔔</div>
-        <div className="absolute top-[60%] right-[30%] text-5xl sm:text-7xl animate-spin-reverse text-amber-300/[0.07]">⭐</div>
-        <div className="absolute top-[68%] left-[5%] text-4xl sm:text-6xl animate-pulse-slow text-amber-400/[0.08]">⭐</div>
-        <div className="absolute top-[72%] right-[8%] text-5xl sm:text-7xl font-bold animate-float text-red-500/[0.06]">7</div>
-        <div className="absolute top-[78%] left-[30%] text-3xl sm:text-5xl font-bold tracking-wider animate-bounce-slow text-amber-500/[0.07]">BAR</div>
-        <div className="absolute top-[82%] right-[40%] text-4xl sm:text-6xl animate-spin-slow text-red-400/[0.07]">🍒</div>
-        <div className="absolute top-[88%] left-[60%] text-4xl sm:text-5xl animate-pulse-slow text-cyan-400/[0.06]">💎</div>
-        <div className="absolute top-[92%] left-[10%] text-5xl sm:text-6xl animate-float text-yellow-400/[0.08]">🔔</div>
-        <div className="absolute top-[85%] right-[15%] text-4xl sm:text-5xl animate-spin-reverse text-amber-300/[0.06]">⭐</div>
-        <div className="absolute top-[50%] left-[65%] text-6xl sm:text-8xl font-bold animate-pulse-slow text-amber-500/[0.05]">7</div>
-        <div className="absolute top-[38%] left-[48%] text-3xl sm:text-4xl animate-bounce-slow text-green-400/[0.06]">🍋</div>
-        <div className="absolute top-[75%] left-[45%] text-4xl sm:text-5xl animate-float text-green-300/[0.07]">🍋</div>
+        <div className="absolute top-[3%] left-[3%] text-5xl sm:text-7xl font-bold animate-spin-slow text-amber-500/[0.08] ios-symbol">7</div>
+        <div className="absolute top-[8%] right-[8%] text-6xl sm:text-8xl font-bold animate-pulse-slow text-amber-400/[0.07] ios-symbol">7</div>
+        <div className="absolute top-[18%] left-[20%] text-4xl sm:text-6xl font-bold animate-float text-red-500/[0.06] ios-symbol">7</div>
+        <div className="absolute top-[25%] right-[25%] text-3xl sm:text-5xl font-bold tracking-wider animate-bounce-slow text-amber-500/[0.07] ios-symbol">BAR</div>
+        <div className="absolute top-[35%] left-[8%] text-4xl sm:text-6xl font-bold tracking-wider animate-pulse-slow text-amber-400/[0.06] ios-symbol">BAR</div>
+        <div className="absolute top-[15%] left-[55%] text-5xl sm:text-6xl animate-spin-reverse text-red-400/[0.07] ios-symbol">🍒</div>
+        <div className="absolute top-[42%] right-[5%] text-4xl sm:text-6xl animate-float text-red-400/[0.08] ios-symbol">🍒</div>
+        <div className="absolute top-[10%] left-[75%] text-5xl sm:text-7xl animate-pulse-slow text-cyan-400/[0.06] ios-symbol">💎</div>
+        <div className="absolute top-[48%] left-[18%] text-4xl sm:text-5xl animate-spin-slow text-cyan-300/[0.07] ios-symbol">💎</div>
+        <div className="absolute top-[30%] right-[12%] text-4xl sm:text-6xl animate-bounce-slow text-yellow-400/[0.07] ios-symbol">🔔</div>
+        <div className="absolute top-[55%] left-[40%] text-3xl sm:text-5xl animate-float text-yellow-300/[0.06] ios-symbol">🔔</div>
+        <div className="absolute top-[60%] right-[30%] text-5xl sm:text-7xl animate-spin-reverse text-amber-300/[0.07] ios-symbol">⭐</div>
+        <div className="absolute top-[68%] left-[5%] text-4xl sm:text-6xl animate-pulse-slow text-amber-400/[0.08] ios-symbol">⭐</div>
+        <div className="absolute top-[72%] right-[8%] text-5xl sm:text-7xl font-bold animate-float text-red-500/[0.06] ios-symbol">7</div>
+        <div className="absolute top-[78%] left-[30%] text-3xl sm:text-5xl font-bold tracking-wider animate-bounce-slow text-amber-500/[0.07] ios-symbol">BAR</div>
+        <div className="absolute top-[82%] right-[40%] text-4xl sm:text-6xl animate-spin-slow text-red-400/[0.07] ios-symbol">🍒</div>
+        <div className="absolute top-[88%] left-[60%] text-4xl sm:text-5xl animate-pulse-slow text-cyan-400/[0.06] ios-symbol">💎</div>
+        <div className="absolute top-[92%] left-[10%] text-5xl sm:text-6xl animate-float text-yellow-400/[0.08] ios-symbol">🔔</div>
+        <div className="absolute top-[85%] right-[15%] text-4xl sm:text-5xl animate-spin-reverse text-amber-300/[0.06] ios-symbol">⭐</div>
+        <div className="absolute top-[50%] left-[65%] text-6xl sm:text-8xl font-bold animate-pulse-slow text-amber-500/[0.05] ios-symbol">7</div>
+        <div className="absolute top-[38%] left-[48%] text-3xl sm:text-4xl animate-bounce-slow text-green-400/[0.06] ios-symbol">🍋</div>
+        <div className="absolute top-[75%] left-[45%] text-4xl sm:text-5xl animate-float text-green-300/[0.07] ios-symbol">🍋</div>
       </div>
 
       {/* ═══ Hero ═══ */}
