@@ -444,7 +444,7 @@ export default function Home() {
       </section>
 
       {/* ═══ Contact ═══ */}
-      <section className="py-16 sm:py-20 md:py-24 px-4 border-t border-[oklch(0.75_0.15_85)]/20 relative z-10">
+      <section className="py-16 sm:py-20 md:py-24 px-4 pb-[60vh] sm:pb-[50vh] border-t border-[oklch(0.75_0.15_85)]/20 relative z-10">
         <div className="container max-w-2xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 sm:mb-8 text-[oklch(0.75_0.15_85)]">Yhteystiedot</h2>
 
@@ -497,6 +497,9 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* Spacer for better mobile scrolling */}
+      <div className="h-[40vh] sm:h-[30vh]"></div>
 
       {/* ═══ Slot Machine Modal ═══ */}
       {contactPhase === 'slot' && (
