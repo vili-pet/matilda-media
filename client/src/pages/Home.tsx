@@ -413,18 +413,6 @@ export default function Home() {
       {contactPhase === 'slot' && (
         <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4">
           <div className="relative max-w-sm w-full">
-            {/* Flashing lights around the frame */}
-            <div className="absolute -inset-2 rounded-3xl opacity-75">
-              <div className="absolute top-0 left-1/4 w-3 h-3 rounded-full bg-red-500 animate-pulse" style={{animationDelay: '0s'}} />
-              <div className="absolute top-0 right-1/4 w-3 h-3 rounded-full bg-yellow-500 animate-pulse" style={{animationDelay: '0.2s'}} />
-              <div className="absolute bottom-0 left-1/4 w-3 h-3 rounded-full bg-green-500 animate-pulse" style={{animationDelay: '0.4s'}} />
-              <div className="absolute bottom-0 right-1/4 w-3 h-3 rounded-full bg-blue-500 animate-pulse" style={{animationDelay: '0.6s'}} />
-              <div className="absolute top-1/4 left-0 w-3 h-3 rounded-full bg-purple-500 animate-pulse" style={{animationDelay: '0.8s'}} />
-              <div className="absolute top-1/4 right-0 w-3 h-3 rounded-full bg-pink-500 animate-pulse" style={{animationDelay: '1s'}} />
-              <div className="absolute bottom-1/4 left-0 w-3 h-3 rounded-full bg-cyan-500 animate-pulse" style={{animationDelay: '1.2s'}} />
-              <div className="absolute bottom-1/4 right-0 w-3 h-3 rounded-full bg-orange-500 animate-pulse" style={{animationDelay: '1.4s'}} />
-            </div>
-            
             {/* Metal frame */}
             <div className="bg-gradient-to-b from-[#4a4a5a] via-[#2a2a3a] to-[#1a1a2a] rounded-2xl p-1.5 shadow-[0_0_60px_rgba(212,175,55,0.15)]">
               <div className="bg-gradient-to-b from-[oklch(0.18_0.04_250)] to-[oklch(0.12_0.03_250)] rounded-xl p-5 sm:p-6 border border-[oklch(0.75_0.15_85)]/20">
