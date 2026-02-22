@@ -58,11 +58,11 @@ export default function Blog() {
         <div className="container max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-8">
             <Link href="/">
-              <a className="inline-block text-3xl sm:text-4xl font-bold mb-6 tracking-tight hover:opacity-80 transition-opacity"
+              <span className="inline-block text-3xl sm:text-4xl font-bold mb-6 tracking-tight hover:opacity-80 transition-opacity cursor-pointer"
                 style={{ fontFamily: 'Playfair Display, serif' }}>
                 <span className="text-[oklch(0.85_0.15_85)]">MATILDA</span>
                 <span className="text-[oklch(0.92_0.01_85)]"> MEDIA</span>
-              </a>
+              </span>
             </Link>
             <div className="h-1 w-24 mx-auto bg-gradient-to-r from-transparent via-[oklch(0.75_0.15_85)] to-transparent mb-8" />
           </div>
@@ -83,7 +83,6 @@ export default function Blog() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogPosts.map((post) => (
               <Link key={post.slug} href={`/blogi/${post.slug}`}>
-                <a>
                   <Card className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 hover:border-[oklch(0.75_0.15_85)]/40 transition-all duration-300 hover:shadow-[0_0_30px_rgba(212,175,55,0.2)] group h-full">
                     <div className="p-6 flex flex-col h-full">
                       {/* Category & Read Time */}
@@ -119,7 +118,6 @@ export default function Blog() {
                       </div>
                     </div>
                   </Card>
-                </a>
               </Link>
             ))}
           </div>
@@ -130,11 +128,11 @@ export default function Blog() {
       <footer className="border-t border-[oklch(0.75_0.15_85)]/10 py-12 px-4">
         <div className="container max-w-6xl mx-auto text-center">
           <Link href="/">
-            <a className="inline-block text-2xl font-bold mb-4 hover:opacity-80 transition-opacity"
+            <span className="inline-block text-2xl font-bold mb-4 hover:opacity-80 transition-opacity cursor-pointer"
               style={{ fontFamily: 'Playfair Display, serif' }}>
               <span className="text-[oklch(0.85_0.15_85)]">MATILDA</span>
               <span className="text-[oklch(0.92_0.01_85)]"> MEDIA</span>
-            </a>
+            </span>
           </Link>
           <p className="text-sm text-[oklch(0.55_0.03_85)]">
             © 2026 Matilda Media. Helsinki, Suomi.

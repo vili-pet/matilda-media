@@ -224,9 +224,9 @@ export default function BlogPost() {
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4 text-[oklch(0.85_0.15_85)]">Artikkelia ei löytynyt</h1>
           <Link href="/blogi">
-            <a className="text-[oklch(0.75_0.15_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors">
+            <span className="text-[oklch(0.75_0.15_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors cursor-pointer">
               ← Takaisin blogiin
-            </a>
+            </span>
           </Link>
         </div>
       </div>
@@ -245,10 +245,10 @@ export default function BlogPost() {
         <div className="container max-w-4xl mx-auto relative z-10">
           {/* Back to Blog */}
           <Link href="/blogi">
-            <a className="inline-flex items-center gap-2 text-[oklch(0.75_0.15_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors mb-8">
+            <span className="inline-flex items-center gap-2 text-[oklch(0.75_0.15_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors mb-8 cursor-pointer">
               <ArrowLeft className="w-5 h-5" />
               Takaisin blogiin
-            </a>
+            </span>
           </Link>
 
           {/* Category */}
@@ -305,11 +305,11 @@ export default function BlogPost() {
       <footer className="border-t border-[oklch(0.75_0.15_85)]/10 py-12 px-4">
         <div className="container max-w-6xl mx-auto text-center">
           <Link href="/">
-            <a className="inline-block text-2xl font-bold mb-4 hover:opacity-80 transition-opacity"
+            <span className="inline-block text-2xl font-bold mb-4 hover:opacity-80 transition-opacity cursor-pointer"
               style={{ fontFamily: 'Playfair Display, serif' }}>
               <span className="text-[oklch(0.85_0.15_85)]">MATILDA</span>
               <span className="text-[oklch(0.92_0.01_85)]"> MEDIA</span>
-            </a>
+            </span>
           </Link>
           <p className="text-sm text-[oklch(0.55_0.03_85)]">
             © 2026 Matilda Media. Helsinki, Suomi.
