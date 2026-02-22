@@ -3,19 +3,21 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Calendar, TrendingUp, Users, Zap, CheckCircle2, ArrowRight } from "lucide-react";
+import { Calendar, TrendingUp, Users, Zap, CheckCircle2, ArrowRight, Globe } from "lucide-react";
 
 /**
  * Matilda Media - Professional B2B iGaming Media Platform
  * Design Philosophy: Art Deco Luxury meets Modern Brutalism
  * - Dark background with subtle neon accents
  * - Large typography, clean hierarchy
- * - No game mechanics, pure professionalism
- * - Focus on trust, expertise, and results
+ * - Premium B2B positioning with transparent pricing
+ * - Focus on trust, expertise, and measurable results
+ * - Bilingual support (Finnish + English)
  */
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [language, setLanguage] = useState<'fi' | 'en'>('fi');
 
   // Countdown to July 1, 2027 00:00
   useEffect(() => {
@@ -35,8 +37,187 @@ export default function Home() {
     return () => clearInterval(id);
   }, []);
 
+  const t = {
+    fi: {
+      tagline1: "Näkyvyyttä joka konvertoi.",
+      tagline2: "Sisältöä joka jää mieleen.",
+      hero: "Me tunnemme iGamingin säännöt – ja osaamme pelata niillä paremmin kuin kukaan muu Suomessa. Valmistaudu Suomen rahapelimarkkinan avaukseen 1.7.2027. Autamme kansainvälisiä operaattoreita räjäyttämään some-näkyvyyden jo ennen ensimmäistä pelaajaa.",
+      impressions: "Yli 22 miljoonaa orgaanista näyttökertaa asiakkaillemme jo ennen markkinan avausta.",
+      bookCall: "Varaa 15 min ilmaista strategia-puhelua",
+      services: "Tutustu palveluihin",
+      packages: "iGaming Media Packages",
+      packagesDesc: "Valitse tarpeisiisi sopiva paketti – kaikki räätälöitävissä",
+      coreVisibility: "Core Visibility",
+      coreDesc: "Lyhytvideoiden ja reelien tehopaketti nopeaan näkyvyyteen.",
+      corePrice: "alkaen 7 900 € / kk",
+      coreFeatures: ["10–15 lyhytvideota / kk", "Trumppeja somessa", "Perusanalytiikkaraportti"],
+      coreCase: "+340 % engagement eräälle eurooppalaiselle kasinoasiakkaalle 45 päivässä",
+      fullPodcast: "Full Podcast Power",
+      fullDesc: "Koko some + podcast -paketti, joka rakentaa brändiä pitkällä tähtäimellä.",
+      fullPrice: "alkaen 14 900 € / kk",
+      fullFeatures: ["4–6 podcast-jaksoa / kk (täysi tuotanto: äänitys, editointi, miksaus)", "12–16 some-postausta / kk", "Promo-klipit kaikkiin kanaviin", "Täysi jakelu + optimointi"],
+      fullCase: "1,2 miljoonaa impressions ensimmäisessä kuukaudessa",
+      popular: "SUOSITUIN",
+      enterprise: "Enterprise Full Control",
+      enterpriseDesc: "Täysi some-hallinta + strategiakonsultointi.",
+      enterprisePrice: "alkaen 24 900 € / kk",
+      enterpriseFeatures: ["Kaikki ylläoleva + rajaton määrä sisältöä", "Viikottainen strategia-kokous", "Kampanjoiden suunnittelu markkinan avaukseen", "Oma dedikoitu account manager", "Vuosiraportti + seuraavan kvartaalin roadmap"],
+      enterpriseNote: "Minimissään 6 kk sopimus – markkinan avautumisen takia.",
+      results: "Tulokset puhuvat puolestaan",
+      resultsDesc: "Anonymisoituja case-esimerkkejä asiakkaidemme menestyksestä",
+      case1: "Eurooppalainen operaattori A",
+      case1Before: "Ennen: 8 400 seuraajaa, 2,1 % engagement",
+      case1After: "Jälkeen 90 päivää: 52 000 seuraajaa, 13,7 % engagement → +520 % kasvu",
+      case2: "Vedonlyöntibrändi B",
+      case2Result: "1,2 miljoonaa impressions ensimmäisessä kuukaudessa → ROI 8,4x",
+      case3: "Uusi kasino C (valmistautumassa 2027)",
+      case3Result: "TikTok-reelsit keräsivät 430 000 katselukertaa ilman maksettua mainontaa.",
+      why: "Miksi Matilda Media?",
+      whyDesc: "Me tunnemme iGamingin säännöt – ja osaamme pelata niillä.",
+      affiliate: "Affiliate-markkinointi",
+      affiliateDesc: "Ymmärrämme affiliate-ekosysteemin läpikotaisin ja luomme sisältöä, joka muuttaa katsojat pelaajiksi.",
+      responsible: "Vastuullinen pelaaminen",
+      responsibleDesc: "Kaikki sisältömme noudattaa 100 % Suomen tulevaa lainsäädäntöä ja vastuullisen pelaamisen periaatteita. Et koskaan joudu punaiselle listalle.",
+      algorithm: "Algoritmi-optimointi 2027",
+      algorithmDesc: "Tiedämme tarkalleen, miten välttää shadowbannit TikTokissa, Instagramissa ja YouTubessa markkinan avautuessa.",
+      data: "Data & raportointi",
+      dataDesc: "Kuukausittainen läpinäkyvä raportti: reach, engagement, konversiot ja ROI. Tiedät tarkalleen mihin rahasi menevät.",
+      latestBlog: "UUSIN BLOGI",
+      blogTitle: "Top 5 tapaa saada kasinon klipit TikTokiin ilman shadowbannia 2026",
+      blogDesc: "Lue miten navigoit sosiaalisen median sääntöjen harmaalla alueella jo ennen markkinan avausta.",
+      readMore: "Lue lisää",
+      countdown: "Suomen rahapelimarkkina aukeaa 1.7.2027 klo 00:00",
+      countdownSubtitle: "Ole valmis ensimmäisenä. Me olemme.",
+      days: "Päivää",
+      hours: "Tuntia",
+      minutes: "Minuuttia",
+      seconds: "Sekuntia",
+      ready: "Oletko valmis?",
+      contact: "Aloitetaan yhteistyö",
+      contactDesc: "Varaa 15 minuutin strategia-puhelu tai ota yhteyttä suoraan",
+      name: "Nimi",
+      email: "Sähköposti",
+      company: "Yritys",
+      budget: "Budjetti ja tavoite",
+      send: "Lähetä yhteydenottopyyntö",
+      directContact: "Tai ota yhteyttä suoraan:",
+      footer: "Suomalainen iGaming-some-toimisto. Valmiina 2027.",
+      address: "Helsinki / Keuruu",
+      businessId: "Y-tunnus: 3469822-4",
+      phone: "+358 40 258 1601",
+      links: "Linkit",
+      blog: "Blogi",
+      privacy: "Tietosuojakäytäntö",
+      instagram: "Instagram",
+      linkedin: "LinkedIn",
+      gdpr: "GDPR & responsible marketing compliant",
+      copyright: "© 2026 Matilda Media. Kaikki oikeudet pidätetään.",
+    },
+    en: {
+      tagline1: "Visibility that converts.",
+      tagline2: "Content that sticks.",
+      hero: "We know the iGaming rules – and we play them better than anyone in Finland. Prepare for the Finnish gambling market opening on 1.7.2027. We help international operators explode social visibility before the first player.",
+      impressions: "Over 22 million organic impressions for our clients before market opening.",
+      bookCall: "Book a free 15-min strategy call",
+      services: "Explore services",
+      packages: "iGaming Media Packages",
+      packagesDesc: "Choose a package that fits your needs – everything is customizable",
+      coreVisibility: "Core Visibility",
+      coreDesc: "Short videos and reels package for rapid visibility.",
+      corePrice: "from 7,900 € / month",
+      coreFeatures: ["10–15 short videos / month", "Social media hits", "Basic analytics report"],
+      coreCase: "+340% engagement for a European casino client in 45 days",
+      fullPodcast: "Full Podcast Power",
+      fullDesc: "Complete social + podcast package that builds brand long-term.",
+      fullPrice: "from 14,900 € / month",
+      fullFeatures: ["4–6 podcast episodes / month (full production: recording, editing, mixing)", "12–16 social posts / month", "Promo clips for all channels", "Full distribution + optimization"],
+      fullCase: "1.2M impressions in the first month",
+      popular: "MOST POPULAR",
+      enterprise: "Enterprise Full Control",
+      enterpriseDesc: "Complete social management + strategy consulting.",
+      enterprisePrice: "from 24,900 € / month",
+      enterpriseFeatures: ["Everything above + unlimited content", "Weekly strategy sessions", "Campaign planning for market opening", "Dedicated account manager", "Annual report + next quarter roadmap"],
+      enterpriseNote: "Minimum 6-month contract – due to market opening.",
+      results: "Results speak for themselves",
+      resultsDesc: "Anonymized case examples of our clients' success",
+      case1: "European Operator A",
+      case1Before: "Before: 8,400 followers, 2.1% engagement",
+      case1After: "After 90 days: 52,000 followers, 13.7% engagement → +520% growth",
+      case2: "Betting Brand B",
+      case2Result: "1.2M impressions in the first month → 8.4x ROI",
+      case3: "New Casino C (preparing for 2027)",
+      case3Result: "TikTok reels generated 430,000 views without paid advertising.",
+      why: "Why Matilda Media?",
+      whyDesc: "We know the iGaming rules – and we know how to play them.",
+      affiliate: "Affiliate Marketing",
+      affiliateDesc: "We master the affiliate ecosystem and create content that turns viewers into players.",
+      responsible: "Responsible Gaming",
+      responsibleDesc: "All our content follows 100% responsible gaming standards and upcoming Finnish regulation.",
+      algorithm: "Algorithm Optimization 2027",
+      algorithmDesc: "We know exactly how to beat shadowbans on TikTok, IG & YouTube in 2027.",
+      data: "Data & Reporting",
+      dataDesc: "Monthly transparent report: reach, engagement, conversions, and ROI. Know exactly where your money goes.",
+      latestBlog: "LATEST BLOG",
+      blogTitle: "Top 5 Ways to Get Casino Clips on TikTok Without Shadowbans in 2026",
+      blogDesc: "Learn how to navigate social media rules before market opening.",
+      readMore: "Read more",
+      countdown: "Finnish gambling market opens 1.7.2027 at 00:00",
+      countdownSubtitle: "Be ready first. We are.",
+      days: "Days",
+      hours: "Hours",
+      minutes: "Minutes",
+      seconds: "Seconds",
+      ready: "Are you ready?",
+      contact: "Let's start working together",
+      contactDesc: "Book a 15-minute strategy call or contact us directly",
+      name: "Name",
+      email: "Email",
+      company: "Company",
+      budget: "Budget and goal",
+      send: "Send inquiry",
+      directContact: "Or contact us directly:",
+      footer: "Finnish iGaming social media agency. Ready for 2027.",
+      address: "Helsinki / Keuruu",
+      businessId: "Business ID: 3469822-4",
+      phone: "+358 40 258 1601",
+      links: "Links",
+      blog: "Blog",
+      privacy: "Privacy Policy",
+      instagram: "Instagram",
+      linkedin: "LinkedIn",
+      gdpr: "GDPR & responsible marketing compliant",
+      copyright: "© 2026 Matilda Media. All rights reserved.",
+    }
+  };
+
+  const content = t[language];
+
   return (
     <div className="min-h-screen bg-[oklch(0.08_0.01_250)] text-[oklch(0.92_0.01_85)]">
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <button
+          onClick={() => setLanguage('fi')}
+          className={`px-3 py-1 rounded text-sm font-semibold transition-all ${
+            language === 'fi'
+              ? 'bg-[oklch(0.75_0.15_85)] text-[oklch(0.08_0.01_250)]'
+              : 'bg-[oklch(0.12_0.02_250)] text-[oklch(0.75_0.15_85)] border border-[oklch(0.75_0.15_85)]/50'
+          }`}
+        >
+          FI
+        </button>
+        <button
+          onClick={() => setLanguage('en')}
+          className={`px-3 py-1 rounded text-sm font-semibold transition-all ${
+            language === 'en'
+              ? 'bg-[oklch(0.75_0.15_85)] text-[oklch(0.08_0.01_250)]'
+              : 'bg-[oklch(0.12_0.02_250)] text-[oklch(0.75_0.15_85)] border border-[oklch(0.75_0.15_85)]/50'
+          }`}
+        >
+          EN
+        </button>
+      </div>
+
       {/* ═══ Hero Section ═══ */}
       <section className="relative min-h-screen flex items-center justify-center px-4 py-20 overflow-hidden">
         {/* Subtle background glow */}
@@ -59,13 +240,16 @@ export default function Home() {
           {/* Tagline */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-center mb-8 leading-tight"
             style={{ fontFamily: 'Montserrat, sans-serif' }}>
-            Näkyvyyttä joka konvertoi.<br />
-            <span className="text-[oklch(0.75_0.15_85)]">Sisältöä joka jää mieleen.</span>
+            {content.tagline1}<br />
+            <span className="text-[oklch(0.75_0.15_85)]">{content.tagline2}</span>
           </h2>
 
           <p className="text-center text-lg sm:text-xl text-[oklch(0.65_0.03_85)] max-w-3xl mx-auto mb-12 font-light">
-            Erikoistumme uhkapeliteemaisen median tuotantoon – podcasteista klippeihin, äänityksistä videoihin.
-            Yli 22 miljoonaa orgaanista näyttökertaa kertovat, että osaamme luoda sisältöä, joka leviää.
+            {content.hero}
+          </p>
+
+          <p className="text-center text-base sm:text-lg text-[oklch(0.75_0.15_85)] max-w-3xl mx-auto mb-12 font-semibold">
+            {content.impressions}
           </p>
 
           {/* CTA */}
@@ -79,7 +263,7 @@ export default function Home() {
               }}
             >
               <Calendar className="mr-2 h-5 w-5" />
-              Varaa 15 min strategia-puhelu
+              {content.bookCall}
             </Button>
             <Button
               size="lg"
@@ -90,24 +274,91 @@ export default function Home() {
                 servicesSection?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              Tutustu palveluihin
+              {content.services}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
+        </div>
+      </section>
 
-          {/* Trust Logos */}
-          <div className="text-center">
-            <p className="text-sm text-[oklch(0.55_0.03_85)] mb-6 uppercase tracking-wider font-light">
-              Yhteistyössä Suomen johtavien iGaming-brändien kanssa
+      {/* ═══ Why Matilda - Expertise ═══ */}
+      <section className="py-20 sm:py-32 px-4 border-t border-[oklch(0.75_0.15_85)]/10">
+        <div className="container max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-[oklch(0.85_0.15_85)]"
+              style={{ fontFamily: 'Playfair Display, serif' }}>
+              {content.why}
+            </h2>
+            <p className="text-lg sm:text-xl text-[oklch(0.65_0.03_85)] max-w-3xl mx-auto font-light">
+              {content.whyDesc}
             </p>
-            <div className="flex flex-wrap justify-center items-center gap-8 sm:gap-12 opacity-60">
-              {/* Placeholder logos - replace with real partner logos */}
-              <div className="text-2xl sm:text-3xl font-bold text-[oklch(0.45_0.03_85)]">BRÄNDI 1</div>
-              <div className="text-2xl sm:text-3xl font-bold text-[oklch(0.45_0.03_85)]">BRÄNDI 2</div>
-              <div className="text-2xl sm:text-3xl font-bold text-[oklch(0.45_0.03_85)]">BRÄNDI 3</div>
-              <div className="text-2xl sm:text-3xl font-bold text-[oklch(0.45_0.03_85)]">BRÄNDI 4</div>
-            </div>
           </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            <Card className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-6">
+              <div className="text-[oklch(0.75_0.15_85)] mb-4">
+                <CheckCircle2 className="h-10 w-10" />
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-[oklch(0.85_0.15_85)]">{content.affiliate}</h3>
+              <p className="text-[oklch(0.65_0.03_85)] text-sm font-light">
+                {content.affiliateDesc}
+              </p>
+            </Card>
+
+            <Card className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-6">
+              <div className="text-[oklch(0.75_0.15_85)] mb-4">
+                <CheckCircle2 className="h-10 w-10" />
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-[oklch(0.85_0.15_85)]">{content.responsible}</h3>
+              <p className="text-[oklch(0.65_0.03_85)] text-sm font-light">
+                {content.responsibleDesc}
+              </p>
+            </Card>
+
+            <Card className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-6">
+              <div className="text-[oklch(0.75_0.15_85)] mb-4">
+                <CheckCircle2 className="h-10 w-10" />
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-[oklch(0.85_0.15_85)]">{content.algorithm}</h3>
+              <p className="text-[oklch(0.65_0.03_85)] text-sm font-light">
+                {content.algorithmDesc}
+              </p>
+            </Card>
+
+            <Card className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-6">
+              <div className="text-[oklch(0.75_0.15_85)] mb-4">
+                <CheckCircle2 className="h-10 w-10" />
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-[oklch(0.85_0.15_85)]">{content.data}</h3>
+              <p className="text-[oklch(0.65_0.03_85)] text-sm font-light">
+                {content.dataDesc}
+              </p>
+            </Card>
+          </div>
+
+          {/* Blog teaser */}
+          <Card className="bg-gradient-to-r from-[oklch(0.10_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-8 sm:p-10">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+              <div>
+                <div className="inline-block bg-[oklch(0.75_0.15_85)]/10 text-[oklch(0.75_0.15_85)] text-xs font-bold px-3 py-1 rounded-full mb-3">
+                  {content.latestBlog}
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold mb-3 text-[oklch(0.85_0.15_85)]">
+                  {content.blogTitle}
+                </h3>
+                <p className="text-[oklch(0.65_0.03_85)] font-light">
+                  {content.blogDesc}
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                className="border-2 border-[oklch(0.75_0.15_85)]/50 text-[oklch(0.85_0.15_85)] hover:bg-[oklch(0.75_0.15_85)]/10 hover:border-[oklch(0.75_0.15_85)] font-semibold px-6 py-3 rounded-lg transition-all duration-300 whitespace-nowrap"
+              >
+                {content.readMore}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </Card>
         </div>
       </section>
 
@@ -117,10 +368,10 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-[oklch(0.85_0.15_85)]"
               style={{ fontFamily: 'Playfair Display, serif' }}>
-              iGaming Media Packages
+              {content.packages}
             </h2>
             <p className="text-lg sm:text-xl text-[oklch(0.65_0.03_85)] max-w-3xl mx-auto font-light">
-              Valitse tarpeisiisi sopiva paketti – kaikki räätälöitävissä
+              {content.packagesDesc}
             </p>
           </div>
 
@@ -129,97 +380,79 @@ export default function Home() {
             <Card className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-8 hover:border-[oklch(0.75_0.15_85)]/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)]">
               <div className="flex items-center gap-3 mb-6">
                 <Zap className="h-8 w-8 text-[oklch(0.75_0.15_85)]" />
-                <h3 className="text-2xl font-bold text-[oklch(0.85_0.15_85)]">Core Visibility</h3>
+                <div>
+                  <h3 className="text-2xl font-bold text-[oklch(0.85_0.15_85)]">{content.coreVisibility}</h3>
+                  <p className="text-[oklch(0.75_0.15_85)] font-semibold text-lg">{content.corePrice}</p>
+                </div>
               </div>
               <p className="text-[oklch(0.65_0.03_85)] mb-6 font-light">
-                Shorts/Reels + thumbnailit – nopea näkyvyys sosiaalisessa mediassa
+                {content.coreDesc}
               </p>
               <ul className="space-y-3 mb-8">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-[oklch(0.75_0.03_85)]">10-15 lyhytvideota/kk</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-[oklch(0.75_0.03_85)]">Thumbnail-suunnittelu</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-[oklch(0.75_0.03_85)]">Peruskäsikirjoitus</span>
-                </li>
+                {content.coreFeatures.map((feature, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[oklch(0.75_0.03_85)]">{feature}</span>
+                  </li>
+                ))}
               </ul>
               <div className="text-center pt-6 border-t border-[oklch(0.75_0.15_85)]/20">
-                <p className="text-sm text-[oklch(0.55_0.03_85)] mb-2">Case example:</p>
-                <p className="text-[oklch(0.75_0.15_85)] font-semibold">+340% engagement eräällä kasinoasiakkaalla</p>
+                <p className="text-sm text-[oklch(0.55_0.03_85)] mb-2">Case:</p>
+                <p className="text-[oklch(0.75_0.15_85)] font-semibold">{content.coreCase}</p>
               </div>
             </Card>
 
             {/* Full Podcast Power */}
             <Card className="bg-gradient-to-b from-[oklch(0.14_0.03_250)] to-[oklch(0.10_0.02_250)] border-[oklch(0.75_0.15_85)]/40 p-8 relative overflow-hidden hover:border-[oklch(0.75_0.15_85)]/70 transition-all duration-300 hover:shadow-[0_0_40px_rgba(212,175,55,0.25)] transform hover:scale-105">
               <div className="absolute top-4 right-4 bg-[oklch(0.75_0.15_85)] text-[oklch(0.08_0.01_250)] text-xs font-bold px-3 py-1 rounded-full">
-                SUOSITUIN
+                {content.popular}
               </div>
               <div className="flex items-center gap-3 mb-6">
                 <TrendingUp className="h-8 w-8 text-[oklch(0.75_0.15_85)]" />
-                <h3 className="text-2xl font-bold text-[oklch(0.85_0.15_85)]">Full Podcast Power</h3>
+                <div>
+                  <h3 className="text-2xl font-bold text-[oklch(0.85_0.15_85)]">{content.fullPodcast}</h3>
+                  <p className="text-[oklch(0.75_0.15_85)] font-semibold text-lg">{content.fullPrice}</p>
+                </div>
               </div>
               <p className="text-[oklch(0.65_0.03_85)] mb-6 font-light">
-                Koko tuotanto + jakelu + promo – täysi podcast-palvelu
+                {content.fullDesc}
               </p>
               <ul className="space-y-3 mb-8">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-[oklch(0.75_0.03_85)]">4-6 podcast-jaksoa/kk</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-[oklch(0.75_0.03_85)]">Täysi tuotanto (äänitys, editointi, miksaus)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-[oklch(0.75_0.03_85)]">Jakelu kaikille alustoille</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-[oklch(0.75_0.03_85)]">Promo-klipit sosiaaliseen mediaan</span>
-                </li>
+                {content.fullFeatures.map((feature, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[oklch(0.75_0.03_85)]">{feature}</span>
+                  </li>
+                ))}
               </ul>
               <div className="text-center pt-6 border-t border-[oklch(0.75_0.15_85)]/20">
-                <p className="text-sm text-[oklch(0.55_0.03_85)] mb-2">Case example:</p>
-                <p className="text-[oklch(0.75_0.15_85)] font-semibold">1,2M impressions ensimmäisessä kuussa</p>
+                <p className="text-sm text-[oklch(0.55_0.03_85)] mb-2">Case:</p>
+                <p className="text-[oklch(0.75_0.15_85)] font-semibold">{content.fullCase}</p>
               </div>
             </Card>
 
-            {/* High Roller Campaign */}
+            {/* Enterprise Full Control */}
             <Card className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-8 hover:border-[oklch(0.75_0.15_85)]/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)]">
               <div className="flex items-center gap-3 mb-6">
                 <Users className="h-8 w-8 text-[oklch(0.75_0.15_85)]" />
-                <h3 className="text-2xl font-bold text-[oklch(0.85_0.15_85)]">High Roller Campaign</h3>
+                <div>
+                  <h3 className="text-2xl font-bold text-[oklch(0.85_0.15_85)]">{content.enterprise}</h3>
+                  <p className="text-[oklch(0.75_0.15_85)] font-semibold text-lg">{content.enterprisePrice}</p>
+                </div>
               </div>
               <p className="text-[oklch(0.65_0.03_85)] mb-6 font-light">
-                360° sisältö + paid boost + raportointi – täysi kampanja
+                {content.enterpriseDesc}
               </p>
               <ul className="space-y-3 mb-8">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-[oklch(0.75_0.03_85)]">Kaikki Core + Podcast -sisällöt</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-[oklch(0.75_0.03_85)]">Paid media boost (Meta, TikTok, YouTube)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-[oklch(0.75_0.03_85)]">Kuukausiraportointi + strategia-puhelut</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-[oklch(0.75_0.03_85)]">Dediko itu account manager</span>
-                </li>
+                {content.enterpriseFeatures.map((feature, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-[oklch(0.75_0.15_85)] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[oklch(0.75_0.03_85)]">{feature}</span>
+                  </li>
+                ))}
               </ul>
               <div className="text-center pt-6 border-t border-[oklch(0.75_0.15_85)]/20">
-                <p className="text-sm text-[oklch(0.55_0.03_85)] mb-2">Case example:</p>
-                <p className="text-[oklch(0.75_0.15_85)] font-semibold">ROI 4,2x ensimmäisellä kvartaalilla</p>
+                <p className="text-sm text-[oklch(0.55_0.03_85)]">{content.enterpriseNote}</p>
               </div>
             </Card>
           </div>
@@ -232,10 +465,10 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-[oklch(0.85_0.15_85)]"
               style={{ fontFamily: 'Playfair Display, serif' }}>
-              Tulokset puhuvat puolestaan
+              {content.results}
             </h2>
             <p className="text-lg sm:text-xl text-[oklch(0.65_0.03_85)] max-w-3xl mx-auto font-light">
-              Anonymisoituja case-esimerkkejä asiakkaidemme menestyksestä
+              {content.resultsDesc}
             </p>
           </div>
 
@@ -248,25 +481,14 @@ export default function Home() {
                     CASE STUDY #1
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-[oklch(0.85_0.15_85)]">
-                    Uusi kasino: 0 → 1,2M impressions 30 päivässä
+                    {content.case1}
                   </h3>
-                  <p className="text-[oklch(0.65_0.03_85)] mb-6 font-light">
-                    Uusi kasinobrändi tarvitsi nopean lanseerauksen sosiaalisessa mediassa. Toteutimme 30 päivän kampanjan, joka yhdisti podcastit, lyhytvideot ja paid median.
+                  <p className="text-[oklch(0.65_0.03_85)] mb-4 font-light">
+                    {content.case1Before}
                   </p>
-                  <div className="grid grid-cols-3 gap-4 mb-6">
-                    <div>
-                      <p className="text-3xl font-bold text-[oklch(0.75_0.15_85)]">1,2M</p>
-                      <p className="text-sm text-[oklch(0.55_0.03_85)]">Impressions</p>
-                    </div>
-                    <div>
-                      <p className="text-3xl font-bold text-[oklch(0.75_0.15_85)]">+340%</p>
-                      <p className="text-sm text-[oklch(0.55_0.03_85)]">Engagement</p>
-                    </div>
-                    <div>
-                      <p className="text-3xl font-bold text-[oklch(0.75_0.15_85)]">30</p>
-                      <p className="text-sm text-[oklch(0.55_0.03_85)]">Päivää</p>
-                    </div>
-                  </div>
+                  <p className="text-[oklch(0.75_0.15_85)] font-semibold mb-6">
+                    {content.case1After}
+                  </p>
                 </div>
                 <div className="bg-[oklch(0.06_0.01_250)] rounded-lg p-8 border border-[oklch(0.75_0.15_85)]/10 flex items-center justify-center min-h-[300px]">
                   <p className="text-[oklch(0.45_0.03_85)] text-center">
@@ -289,100 +511,37 @@ export default function Home() {
                     CASE STUDY #2
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-[oklch(0.85_0.15_85)]">
-                    Podcast-sarja: 500K+ kuuntelua 3 kuukaudessa
+                    {content.case2}
                   </h3>
-                  <p className="text-[oklch(0.65_0.03_85)] mb-6 font-light">
-                    Kasinoalan podcast-sarja, joka käsitteli vastuullista pelaamista ja alan tulevaisuutta. Tuotimme 12 jaksoa ja promoklippejä.
+                  <p className="text-[oklch(0.75_0.15_85)] font-semibold">
+                    {content.case2Result}
                   </p>
-                  <div className="grid grid-cols-3 gap-4 mb-6">
-                    <div>
-                      <p className="text-3xl font-bold text-[oklch(0.75_0.15_85)]">500K+</p>
-                      <p className="text-sm text-[oklch(0.55_0.03_85)]">Kuuntelua</p>
-                    </div>
-                    <div>
-                      <p className="text-3xl font-bold text-[oklch(0.75_0.15_85)]">4,8/5</p>
-                      <p className="text-sm text-[oklch(0.55_0.03_85)]">Arvosana</p>
-                    </div>
-                    <div>
-                      <p className="text-3xl font-bold text-[oklch(0.75_0.15_85)]">12</p>
-                      <p className="text-sm text-[oklch(0.55_0.03_85)]">Jaksoa</p>
-                    </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Case 3 */}
+            <Card className="bg-gradient-to-r from-[oklch(0.10_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-8 sm:p-10">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <div className="inline-block bg-[oklch(0.75_0.15_85)]/10 text-[oklch(0.75_0.15_85)] text-xs font-bold px-3 py-1 rounded-full mb-4">
+                    CASE STUDY #3
                   </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-[oklch(0.85_0.15_85)]">
+                    {content.case3}
+                  </h3>
+                  <p className="text-[oklch(0.75_0.15_85)] font-semibold">
+                    {content.case3Result}
+                  </p>
+                </div>
+                <div className="bg-[oklch(0.06_0.01_250)] rounded-lg p-8 border border-[oklch(0.75_0.15_85)]/10 flex items-center justify-center min-h-[300px]">
+                  <p className="text-[oklch(0.45_0.03_85)] text-center">
+                    [Video embed tai Before/After -klipit]
+                  </p>
                 </div>
               </div>
             </Card>
           </div>
-        </div>
-      </section>
-
-      {/* ═══ Why Matilda - Expertise ═══ */}
-      <section className="py-20 sm:py-32 px-4 border-t border-[oklch(0.75_0.15_85)]/10">
-        <div className="container max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-[oklch(0.85_0.15_85)]"
-              style={{ fontFamily: 'Playfair Display, serif' }}>
-              Miksi Matilda Media?
-            </h2>
-            <p className="text-lg sm:text-xl text-[oklch(0.65_0.03_85)] max-w-3xl mx-auto font-light">
-              Me tunnemme iGamingin säännöt – ja osaamme pelata niillä
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            <Card className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-6">
-              <div className="text-[oklch(0.75_0.15_85)] mb-4">
-                <CheckCircle2 className="h-10 w-10" />
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-[oklch(0.85_0.15_85)]">Affiliate-markkinointi</h3>
-              <p className="text-[oklch(0.65_0.03_85)] text-sm font-light">
-                Ymmärrämme affiliate-ekosysteemin ja osaamme luoda sisältöä, joka konvertoi.
-              </p>
-            </Card>
-
-            <Card className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-6">
-              <div className="text-[oklch(0.75_0.15_85)] mb-4">
-                <CheckCircle2 className="h-10 w-10" />
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-[oklch(0.85_0.15_85)]">Responsible Gaming</h3>
-              <p className="text-[oklch(0.65_0.03_85)] text-sm font-light">
-                Kaikki sisältömme noudattaa vastuullisen pelaamisen periaatteita ja paikallista lainsäädäntöä.
-              </p>
-            </Card>
-
-            <Card className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-6">
-              <div className="text-[oklch(0.75_0.15_85)] mb-4">
-                <CheckCircle2 className="h-10 w-10" />
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-[oklch(0.85_0.15_85)]">Algoritmi-optimointi</h3>
-              <p className="text-[oklch(0.65_0.03_85)] text-sm font-light">
-                Tiedämme, miten välttää shadowbannit ja saada kasinoklipit TikTokiin ja Instagramiin 2026.
-              </p>
-            </Card>
-          </div>
-
-          {/* Blog teaser */}
-          <Card className="bg-gradient-to-r from-[oklch(0.10_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-8 sm:p-10">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-              <div>
-                <div className="inline-block bg-[oklch(0.75_0.15_85)]/10 text-[oklch(0.75_0.15_85)] text-xs font-bold px-3 py-1 rounded-full mb-3">
-                  UUSIN BLOGI
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-bold mb-3 text-[oklch(0.85_0.15_85)]">
-                  Top 5 tapaa saada kasinon klipit TikTokiin ilman shadowbannia 2026
-                </h3>
-                <p className="text-[oklch(0.65_0.03_85)] font-light">
-                  Lue vinkkimme, miten navigoit sosiaalisen median säännöissä ja saat sisältösi näkyviin.
-                </p>
-              </div>
-              <Button
-                variant="outline"
-                className="border-2 border-[oklch(0.75_0.15_85)]/50 text-[oklch(0.85_0.15_85)] hover:bg-[oklch(0.75_0.15_85)]/10 hover:border-[oklch(0.75_0.15_85)] font-semibold px-6 py-3 rounded-lg transition-all duration-300 whitespace-nowrap"
-              >
-                Lue lisää
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </Card>
         </div>
       </section>
 
@@ -391,25 +550,25 @@ export default function Home() {
         <div className="container max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-[oklch(0.85_0.15_85)]"
             style={{ fontFamily: 'Playfair Display, serif' }}>
-            Uusi aikakausi alkaa pian...
+            {content.countdown}
           </h2>
           <p className="text-lg sm:text-xl text-[oklch(0.65_0.03_85)] mb-8 font-light">
-            Suomen rahapelilaki aukeaa 1. heinäkuuta 2027 klo 00:00
+            {content.countdownSubtitle}
           </p>
           <div className="grid grid-cols-4 gap-4 sm:gap-6 max-w-2xl mx-auto mb-8">
-            {(['days', 'hours', 'minutes', 'seconds'] as const).map((unit, idx) => (
+            {(['days', 'hours', 'minutes', 'seconds'] as const).map((unit) => (
               <div key={unit} className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] rounded-lg p-4 sm:p-6 border border-[oklch(0.75_0.15_85)]/20">
                 <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-[oklch(0.75_0.15_85)] tabular-nums">
                   {String(timeLeft[unit]).padStart(2, '0')}
                 </div>
                 <div className="text-xs sm:text-sm text-[oklch(0.55_0.03_85)] mt-2 uppercase tracking-wider">
-                  {unit === 'days' ? 'Päivää' : unit === 'hours' ? 'Tuntia' : unit === 'minutes' ? 'Minuuttia' : 'Sekuntia'}
+                  {unit === 'days' ? content.days : unit === 'hours' ? content.hours : unit === 'minutes' ? content.minutes : content.seconds}
                 </div>
               </div>
             ))}
           </div>
           <p className="text-sm text-[oklch(0.55_0.03_85)] font-light italic">
-            Oletko valmis?
+            {content.ready}
           </p>
         </div>
       </section>
@@ -420,25 +579,25 @@ export default function Home() {
           <div className="text-center mb-12">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-[oklch(0.85_0.15_85)]"
               style={{ fontFamily: 'Playfair Display, serif' }}>
-              Aloitetaan yhteistyö
+              {content.contact}
             </h2>
             <p className="text-lg sm:text-xl text-[oklch(0.65_0.03_85)] font-light">
-              Varaa 15 minuutin strategia-puhelu tai ota yhteyttä suoraan
+              {content.contactDesc}
             </p>
           </div>
 
           <Card className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] border-[oklch(0.75_0.15_85)]/20 p-8 sm:p-10">
             <form className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-[oklch(0.75_0.03_85)] mb-2">Nimi</label>
+                <label className="block text-sm font-medium text-[oklch(0.75_0.03_85)] mb-2">{content.name}</label>
                 <input
                   type="text"
                   className="w-full bg-[oklch(0.06_0.01_250)] border border-[oklch(0.75_0.15_85)]/20 rounded-lg px-4 py-3 text-[oklch(0.92_0.01_85)] focus:outline-none focus:border-[oklch(0.75_0.15_85)] transition-colors"
-                  placeholder="Nimesi"
+                  placeholder={content.name}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[oklch(0.75_0.03_85)] mb-2">Sähköposti</label>
+                <label className="block text-sm font-medium text-[oklch(0.75_0.03_85)] mb-2">{content.email}</label>
                 <input
                   type="email"
                   className="w-full bg-[oklch(0.06_0.01_250)] border border-[oklch(0.75_0.15_85)]/20 rounded-lg px-4 py-3 text-[oklch(0.92_0.01_85)] focus:outline-none focus:border-[oklch(0.75_0.15_85)] transition-colors"
@@ -446,19 +605,19 @@ export default function Home() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[oklch(0.75_0.03_85)] mb-2">Yritys</label>
+                <label className="block text-sm font-medium text-[oklch(0.75_0.03_85)] mb-2">{content.company}</label>
                 <input
                   type="text"
                   className="w-full bg-[oklch(0.06_0.01_250)] border border-[oklch(0.75_0.15_85)]/20 rounded-lg px-4 py-3 text-[oklch(0.92_0.01_85)] focus:outline-none focus:border-[oklch(0.75_0.15_85)] transition-colors"
-                  placeholder="Yrityksesi nimi"
+                  placeholder={content.company}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[oklch(0.75_0.03_85)] mb-2">Budjetti ja tavoite</label>
+                <label className="block text-sm font-medium text-[oklch(0.75_0.03_85)] mb-2">{content.budget}</label>
                 <textarea
                   rows={4}
                   className="w-full bg-[oklch(0.06_0.01_250)] border border-[oklch(0.75_0.15_85)]/20 rounded-lg px-4 py-3 text-[oklch(0.92_0.01_85)] focus:outline-none focus:border-[oklch(0.75_0.15_85)] transition-colors resize-none"
-                  placeholder="Kerro lyhyesti tavoitteestasi ja budjetistasi (esim. alkaen 4 900 €/kk)"
+                  placeholder={content.budget}
                 />
               </div>
               <Button
@@ -467,22 +626,30 @@ export default function Home() {
                 className="w-full bg-gradient-to-r from-[oklch(0.75_0.15_85)] to-[oklch(0.65_0.15_85)] text-[oklch(0.08_0.01_250)] hover:from-[oklch(0.80_0.15_85)] hover:to-[oklch(0.70_0.15_85)] font-semibold text-lg py-6 rounded-lg shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all duration-300 hover:shadow-[0_0_40px_rgba(212,175,55,0.5)]"
                 onClick={(e) => {
                   e.preventDefault();
-                  toast.success("Kiitos yhteydenotostasi! Palaamme asiaan 1-2 arkipäivän kuluessa.");
+                  toast.success(language === 'fi' ? "Kiitos yhteydenotostasi! Palaamme asiaan 1-2 arkipäivän kuluessa." : "Thank you for reaching out! We'll get back to you within 1-2 business days.");
                 }}
               >
                 <Calendar className="mr-2 h-5 w-5" />
-                Lähetä yhteydenottopyyntö
+                {content.send}
               </Button>
             </form>
 
             <div className="mt-8 pt-8 border-t border-[oklch(0.75_0.15_85)]/20 text-center">
-              <p className="text-sm text-[oklch(0.65_0.03_85)] mb-3">Tai ota yhteyttä suoraan:</p>
-              <a
-                href="mailto:vili@matilda.media"
-                className="text-[oklch(0.85_0.15_85)] hover:text-[oklch(0.95_0.15_85)] font-semibold transition-colors underline decoration-[oklch(0.75_0.15_85)]/50 hover:decoration-[oklch(0.75_0.15_85)]"
-              >
-                vili@matilda.media
-              </a>
+              <p className="text-sm text-[oklch(0.65_0.03_85)] mb-3">{content.directContact}</p>
+              <div className="space-y-2">
+                <a
+                  href="mailto:info@matilda.media"
+                  className="block text-[oklch(0.85_0.15_85)] hover:text-[oklch(0.95_0.15_85)] font-semibold transition-colors underline decoration-[oklch(0.75_0.15_85)]/50 hover:decoration-[oklch(0.75_0.15_85)]"
+                >
+                  info@matilda.media
+                </a>
+                <a
+                  href="tel:+358402581601"
+                  className="block text-[oklch(0.85_0.15_85)] hover:text-[oklch(0.95_0.15_85)] font-semibold transition-colors underline decoration-[oklch(0.75_0.15_85)]/50 hover:decoration-[oklch(0.75_0.15_85)]"
+                >
+                  {content.phone}
+                </a>
+              </div>
             </div>
           </Card>
         </div>
@@ -498,36 +665,39 @@ export default function Home() {
                 MATILDA MEDIA
               </h3>
               <p className="text-sm text-[oklch(0.65_0.03_85)] font-light">
-                Erikoistumme uhkapeliteemaisen median tuotantoon – podcasteista klippeihin.
+                {content.footer}
               </p>
             </div>
             <div>
               <h4 className="text-sm font-bold mb-3 text-[oklch(0.75_0.03_85)] uppercase tracking-wider">Yhteystiedot</h4>
               <p className="text-sm text-[oklch(0.65_0.03_85)] font-light mb-2">
-                Lappeenranta, Suomi
+                {content.address}
+              </p>
+              <p className="text-sm text-[oklch(0.65_0.03_85)] font-light mb-2">
+                {content.businessId}
               </p>
               <a
-                href="mailto:vili@matilda.media"
+                href="mailto:info@matilda.media"
                 className="text-sm text-[oklch(0.75_0.15_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors"
               >
-                vili@matilda.media
+                info@matilda.media
               </a>
             </div>
             <div>
-              <h4 className="text-sm font-bold mb-3 text-[oklch(0.75_0.03_85)] uppercase tracking-wider">Linkit</h4>
+              <h4 className="text-sm font-bold mb-3 text-[oklch(0.75_0.03_85)] uppercase tracking-wider">{content.links}</h4>
               <Link href="/blogi">
                 <span className="block text-sm text-[oklch(0.65_0.03_85)] hover:text-[oklch(0.75_0.15_85)] transition-colors font-light mb-2 cursor-pointer">
-                  Blogi
+                  {content.blog}
                 </span>
               </Link>
               <p className="text-sm text-[oklch(0.65_0.03_85)] font-light mt-4">
-                GDPR & responsible marketing compliant
+                {content.gdpr}
               </p>
             </div>
           </div>
           <div className="pt-8 border-t border-[oklch(0.75_0.15_85)]/10 text-center">
             <p className="text-sm text-[oklch(0.55_0.03_85)] font-light">
-              © 2026 Matilda Media. Kaikki oikeudet pidätetään.
+              {content.copyright}
             </p>
           </div>
         </div>
