@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -513,8 +514,13 @@ export default function Home() {
               </a>
             </div>
             <div>
-              <h4 className="text-sm font-bold mb-3 text-[oklch(0.75_0.03_85)] uppercase tracking-wider">Compliance</h4>
-              <p className="text-sm text-[oklch(0.65_0.03_85)] font-light">
+              <h4 className="text-sm font-bold mb-3 text-[oklch(0.75_0.03_85)] uppercase tracking-wider">Linkit</h4>
+              <Link href="/blogi">
+                <a className="block text-sm text-[oklch(0.65_0.03_85)] hover:text-[oklch(0.75_0.15_85)] transition-colors font-light mb-2">
+                  Blogi
+                </a>
+              </Link>
+              <p className="text-sm text-[oklch(0.65_0.03_85)] font-light mt-4">
                 GDPR & responsible marketing compliant
               </p>
             </div>
