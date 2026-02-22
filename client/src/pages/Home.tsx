@@ -15,6 +15,14 @@ import { Calendar, TrendingUp, Users, Zap, CheckCircle2, ArrowRight } from "luci
 
 export default function Home() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Track scroll for navbar background
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Countdown to July 1, 2027 00:00
   useEffect(() => {
@@ -36,6 +44,32 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[oklch(0.08_0.01_250)] text-[oklch(0.92_0.01_85)]">
+      {/* ═══ Navbar ═══ */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-[oklch(0.08_0.01_250)]/95 backdrop-blur-md border-b border-[oklch(0.75_0.15_85)]/10' : 'bg-transparent'
+      }`}>
+        <div className="container max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <a href="#" className="text-2xl font-bold tracking-tight" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <span className="text-[oklch(0.85_0.15_85)]">MATILDA</span>
+            <span className="text-[oklch(0.92_0.01_85)]"> MEDIA</span>
+          </a>
+          <div className="hidden md:flex items-center gap-8">
+            <a href="#services" className="text-sm text-[oklch(0.75_0.03_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors font-medium">Palvelut</a>
+            <a href="#cases" className="text-sm text-[oklch(0.75_0.03_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors font-medium">Case Studyt</a>
+            <a href="#expertise" className="text-sm text-[oklch(0.75_0.03_85)] hover:text-[oklch(0.85_0.15_85)] transition-colors font-medium">Asiantuntijuus</a>
+            <Button
+              size="sm"
+              className="bg-gradient-to-r from-[oklch(0.75_0.15_85)] to-[oklch(0.65_0.15_85)] text-[oklch(0.08_0.01_250)] hover:from-[oklch(0.80_0.15_85)] hover:to-[oklch(0.70_0.15_85)] font-semibold rounded-lg shadow-[0_0_20px_rgba(212,175,55,0.2)] transition-all duration-300"
+              onClick={() => {
+                const contactSection = document.getElementById('contact');
+                contactSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              Ota yhteyttä
+            </Button>
+          </div>
+        </div>
+      </nav>
       {/* ═══ Hero Section ═══ */}
       <section className="relative min-h-screen flex items-center justify-center px-4 py-20 overflow-hidden">
         {/* Subtle background glow */}
@@ -226,7 +260,7 @@ export default function Home() {
       </section>
 
       {/* ═══ Portfolio / Case Studies ═══ */}
-      <section className="py-20 sm:py-32 px-4 border-t border-[oklch(0.75_0.15_85)]/10">
+      <section id="cases" className="py-20 sm:py-32 px-4 border-t border-[oklch(0.75_0.15_85)]/10">
         <div className="container max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-[oklch(0.85_0.15_85)]"
@@ -315,7 +349,7 @@ export default function Home() {
       </section>
 
       {/* ═══ Why Matilda - Expertise ═══ */}
-      <section className="py-20 sm:py-32 px-4 border-t border-[oklch(0.75_0.15_85)]/10">
+      <section id="expertise" className="py-20 sm:py-32 px-4 border-t border-[oklch(0.75_0.15_85)]/10">
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-[oklch(0.85_0.15_85)]"
@@ -386,28 +420,28 @@ export default function Home() {
       </section>
 
       {/* ═══ Market Opening Countdown ═══ */}
-      <section className="py-20 sm:py-32 px-4 border-t border-[oklch(0.75_0.15_85)]/10">
-        <div className="container max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-[oklch(0.85_0.15_85)]"
-            style={{ fontFamily: 'Playfair Display, serif' }}>
+      <section className="py-16 sm:py-20 px-4 border-t border-[oklch(0.75_0.15_85)]/5 opacity-60">
+        <div className="container max-w-3xl mx-auto text-center">
+          <h3 className="text-2xl sm:text-3xl font-light mb-3 text-[oklch(0.75_0.03_85)]"
+            style={{ fontFamily: 'Montserrat, sans-serif' }}>
             Uusi aikakausi alkaa pian...
-          </h2>
-          <p className="text-lg sm:text-xl text-[oklch(0.65_0.03_85)] mb-8 font-light">
+          </h3>
+          <p className="text-sm sm:text-base text-[oklch(0.55_0.03_85)] mb-6 font-light">
             Suomen rahapelilaki aukeaa 1. heinäkuuta 2027 klo 00:00
           </p>
-          <div className="grid grid-cols-4 gap-4 sm:gap-6 max-w-2xl mx-auto mb-8">
+          <div className="grid grid-cols-4 gap-3 sm:gap-4 max-w-xl mx-auto mb-4">
             {(['days', 'hours', 'minutes', 'seconds'] as const).map((unit, idx) => (
-              <div key={unit} className="bg-gradient-to-b from-[oklch(0.12_0.02_250)] to-[oklch(0.08_0.01_250)] rounded-lg p-4 sm:p-6 border border-[oklch(0.75_0.15_85)]/20">
-                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-[oklch(0.75_0.15_85)] tabular-nums">
+              <div key={unit} className="bg-gradient-to-b from-[oklch(0.10_0.01_250)] to-[oklch(0.08_0.01_250)] rounded-lg p-3 sm:p-4 border border-[oklch(0.75_0.15_85)]/10">
+                <div className="text-2xl sm:text-3xl font-bold text-[oklch(0.65_0.10_85)] tabular-nums">
                   {String(timeLeft[unit]).padStart(2, '0')}
                 </div>
-                <div className="text-xs sm:text-sm text-[oklch(0.55_0.03_85)] mt-2 uppercase tracking-wider">
-                  {unit === 'days' ? 'Päivää' : unit === 'hours' ? 'Tuntia' : unit === 'minutes' ? 'Minuuttia' : 'Sekuntia'}
+                <div className="text-xs text-[oklch(0.45_0.03_85)] mt-1 uppercase tracking-wider">
+                  {unit === 'days' ? 'Päivää' : unit === 'hours' ? 'Tuntia' : unit === 'minutes' ? 'Min' : 'Sek'}
                 </div>
               </div>
             ))}
           </div>
-          <p className="text-sm text-[oklch(0.55_0.03_85)] font-light italic">
+          <p className="text-xs text-[oklch(0.45_0.03_85)] font-light italic">
             Oletko valmis?
           </p>
         </div>
@@ -503,7 +537,7 @@ export default function Home() {
             <div>
               <h4 className="text-sm font-bold mb-3 text-[oklch(0.75_0.03_85)] uppercase tracking-wider">Yhteystiedot</h4>
               <p className="text-sm text-[oklch(0.65_0.03_85)] font-light mb-2">
-                Lappeenranta, Suomi
+                Helsinki, Suomi
               </p>
               <a
                 href="mailto:vili@matilda.media"
