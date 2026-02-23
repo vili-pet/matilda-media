@@ -22,7 +22,7 @@ export default function Home() {
 
   // Animate impressions counter on mount
   useEffect(() => {
-    const target = 26000000;
+    const target = 31000000;
     const duration = 2000;
     const steps = 60;
     const increment = target / steps;
@@ -46,9 +46,10 @@ export default function Home() {
       heroSub: "Matilda Media helps international iGaming operators establish organic authority in Finland before regulation shifts. Local culture. Platform algorithms. Compliance-first execution.",
       ctaPrimary: "Schedule a Strategic Market Entry Call",
       ctaSecondary: "View Market Impact",
-      kpi1: "organic impressions delivered",
-      kpi2: "Avg +4M organic reach per month",
-      kpi3: "100% compliance-focused execution",
+      kpi1: "organic views delivered",
+      kpi2: "paid media views",
+      kpi3: "estimated monthly ROI",
+      kpi4: "100% compliance-focused execution",
       kpiNote: "Updated monthly • Based on platform analytics • Available for due diligence under NDA",
       whyTitle: "Why Matilda Media?",
       whySub: "Finland-first organic market positioning for iGaming brands entering a regulated environment.",
@@ -63,8 +64,8 @@ export default function Home() {
       packagesTitle: "Strategic Partnership",
       packagesSub: "Fully customized market entry execution. No templates. No limits.",
       packageMain: "The sky is the limit",
-      packageDesc: "Every operator's market entry is unique. We build your strategy from the ground up — tailored to your brand, your timeline, and your regulatory environment.",
-      packageFeatures: ["End-to-end content & distribution strategy", "Compliance-aligned execution from day one", "Dedicated strategic lead", "Full podcast production + short-form amplification", "Cross-platform organic dominance", "Market transition roadmap to 2027", "Monthly performance reviews & ROI intelligence"],
+      packageDesc: "Every operator's market entry is unique. If you have the budget, we'll source whatever you need — from Finnish cultural consultants to Japanese video editors. No templates. No limits. Just results.",
+      packageFeatures: ["Fully custom market entry strategy", "Compliance-first execution from day one", "Dedicated strategic lead", "Whatever resources your brand needs", "Cross-platform organic dominance (TikTok, YouTube, Instagram, Facebook, X, Snapchat)", "Market transition roadmap to 2027", "Monthly performance reviews & ROI intelligence"],
       packageGuarantee: "Performance Guarantee",
       packageGuaranteeDesc: "We stand behind our work. If we don't deliver measurable organic growth within 90 days, we'll work for free until we do.",
       ctaProposal: "Request Custom Proposal",
@@ -72,17 +73,17 @@ export default function Home() {
       casesSub: "Client identities withheld due to confidentiality agreements and Finnish gambling legislation. All campaigns executed in compliance with applicable regulations.",
       case1Title: "European Operator",
       case1Sub: "Pre-regulation organic positioning",
-      case1Before: "Before: 8,400 followers • 2.1% engagement",
-      case1After: "After 90 days: 52,000 followers • 13.7% engagement",
-      case1Growth: "+520% growth",
-      case1Note: "Fully organic execution",
+      case1Metric1: "+520% follower growth (8.4K → 52K)",
+      case1Metric2: "13.7% engagement rate",
+      case1Note: "Well-known online casino brand. Client confidentiality protected under NDA.",
       case2Title: "Betting Brand",
-      case2Metric1: "1.2M impressions in first month",
-      case2Metric2: "ROI 8.4x",
-      case2Note: "Zero paid media",
+      case2Metric1: "1.2M impressions (first month)",
+      case2Metric2: "8.4x ROI",
+      case2Note: "Established betting brand. Client confidentiality protected under NDA.",
       case3Title: "New Casino (Preparing for 2027)",
-      case3Metric1: "430,000 organic TikTok views",
-      case3Note: "No paid advertising • Audience established pre-regulation",
+      case3Metric1: "430K organic TikTok views",
+      case3Metric2: "Pre-2027 audience building",
+      case3Note: "New casino operator. Client confidentiality protected under NDA.",
       casesFooter: "Detailed performance data available under NDA.",
       contactTitle: "Start Your Market Entry",
       contactSub: "Schedule a 15-minute strategic call or contact us directly",
@@ -108,9 +109,10 @@ export default function Home() {
       heroSub: "Matilda Media auttaa kansainvälisiä iGaming-operaattoreita rakentamaan orgaanista auktoriteettia Suomessa ennen sääntelyn muutosta. Paikallinen kulttuuri. Alustakohtaiset algoritmit (TikTok, YouTube, Facebook, Instagram, X, Snapchat). Compliance-fokus.",
       ctaPrimary: "Varaa strateginen markkinoille tulopuhelu",
       ctaSecondary: "Katso markkinavaikutus",
-      kpi1: "orgaanista näyttökertaa toimitettu",
-      kpi2: "Keskimäärin +4M orgaanista tavoittavuutta kuukaudessa",
-      kpi3: "100% compliance-fokus",
+      kpi1: "orgaanista katselukertaa toimitettu",
+      kpi2: "maksettua mainoskatselua",
+      kpi3: "arvioitu kuukausittainen ROI",
+      kpi4: "100% compliance-fokus",
       kpiNote: "Päivitetään kuukausittain • Perustuu alusta-analytiikkaan • Saatavilla due diligence -tarkoituksiin NDA:n alla",
       whyTitle: "Miksi Matilda Media?",
       whySub: "Suomi-ensiksi orgaaninen markkinapositiointi iGaming-brändeille, jotka tulevat säänneltyyn ympäristöön.",
@@ -125,8 +127,8 @@ export default function Home() {
       packagesTitle: "Strateginen kumppanuus",
       packagesSub: "Täysin räätälöity markkinoille tulototeutus. Ei malleja. Ei rajoja.",
       packageMain: "Taivas on rajana",
-      packageDesc: "Jokaisen operaattorin markkinoille tulo on ainutlaatuinen. Rakennamme strategiasi alusta alkaen — räätälöitynä brändillesi, aikataulullesi ja sääntelyympäristöllesi.",
-      packageFeatures: ["End-to-end sisältö- & jakelustrategia", "Compliance-yhteensopiva toteutus alusta alkaen", "Oma strateginen johtaja", "Täysi videotuotanto + monialustainen jakelu", "Monialustainen orgaaninen dominanssi (TikTok, YouTube, Instagram, Facebook, X, Snapchat)", "Markkinasiirtymän roadmap 2027:ään", "Kuukausittaiset suorituskykyarvioinnit & ROI-älykkyys"],
+      packageDesc: "Jokaisen operaattorin markkinoille tulo on ainutlaatuinen. Jos sinulla on budjetti, hankimme mitä tahansa tarvitset — suomalaisista kulttuurikonsulteista japanilaisiin videoeditoreihiin. Ei malleja. Ei rajoja. Vain tuloksia.",
+      packageFeatures: ["Täysin räätälöity markkinoille tulostrategia", "Compliance-ensiksi toteutus alusta alkaen", "Oma strateginen johtaja", "Mitä tahansa resursseja brändisi tarvitsee", "Monialustainen orgaaninen dominanssi (TikTok, YouTube, Instagram, Facebook, X, Snapchat)", "Markkinasiirtymän roadmap 2027:ään", "Kuukausittaiset suorituskykyarvioinnit & ROI-älykkyys"],
       packageGuarantee: "Tulostakuu",
       packageGuaranteeDesc: "Seisomme työmme takana. Jos emme toimita mitattavaa orgaanista kasvua 90 päivän kuluessa, työskentelemme ilmaiseksi kunnes teemme.",
       ctaProposal: "Pyydä räätälöity ehdotus",
@@ -134,17 +136,17 @@ export default function Home() {
       casesSub: "Asiakkaiden henkilöllisyys salattu luottamuksellisuussopimusten ja Suomen rahapelihallinnon vuoksi. Kaikki kampanjat toteutettu sovellettavien säännösten mukaisesti.",
       case1Title: "Eurooppalainen operaattori",
       case1Sub: "Esisääntelyorgaaninen positiointi",
-      case1Before: "Ennen: 8 400 seuraajaa • 2,1 % sitoutuminen",
-      case1After: "90 päivän jälkeen: 52 000 seuraajaa • 13,7 % sitoutuminen",
-      case1Growth: "+520 % kasvu",
-      case1Note: "Täysin orgaaninen toteutus",
+      case1Metric1: "+520% seuraajien kasvu (8,4K → 52K)",
+      case1Metric2: "13,7% sitoutumisprosentti",
+      case1Note: "Tunnettu online-kasinobrändi. Asiakkaan luottamuksellisuus suojattu NDA:lla.",
       case2Title: "Vedonlyöntibrändi",
-      case2Metric1: "1,2M näyttökertaa ensimmäisessä kuukaudessa",
-      case2Metric2: "ROI 8,4x",
-      case2Note: "Ei maksettua mediaa",
+      case2Metric1: "1,2M näyttökertaa (ensimmäinen kuukausi)",
+      case2Metric2: "8,4x ROI",
+      case2Note: "Vakiintunut vedonlyöntibrändi. Asiakkaan luottamuksellisuus suojattu NDA:lla.",
       case3Title: "Uusi kasino (Valmistellaan 2027)",
-      case3Metric1: "430 000 orgaanista TikTok-katselukertaa",
-      case3Note: "Ei maksettua mainontaa • Yleisö rakennettu esisääntelyssä",
+      case3Metric1: "430K orgaanista TikTok-katselukertaa",
+      case3Metric2: "Yleisön rakentaminen ennen 2027",
+      case3Note: "Uusi kasinooperaattori. Asiakkaan luottamuksellisuus suojattu NDA:lla.",
       casesFooter: "Yksityiskohtainen suorituskykydata saatavilla NDA:n alla.",
       contactTitle: "Aloita markkinoille tulosi",
       contactSub: "Varaa 15 minuutin strateginen puhelu tai ota yhteyttä suoraan",
@@ -251,29 +253,37 @@ export default function Home() {
 
           {/* KPI Strip */}
           <div className="bg-[oklch(0.10_0.02_250)] border border-[oklch(0.75_0.15_85)]/10 rounded-lg p-8 sm:p-10">
-            <div className="grid sm:grid-cols-3 gap-8 mb-6">
+            <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
               <div className="text-center">
-                <div className="text-4xl sm:text-5xl font-bold text-[oklch(0.75_0.15_85)] mb-2 tabular-nums">
+                <div className="text-3xl sm:text-4xl font-bold text-[oklch(0.75_0.15_85)] mb-2 tabular-nums">
                   {(impressions / 1000000).toFixed(0)}M+
                 </div>
-                <div className="text-sm text-[oklch(0.65_0.03_85)] font-light">
+                <div className="text-xs sm:text-sm text-[oklch(0.65_0.03_85)] font-light">
                   {content.kpi1}
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-4xl sm:text-5xl font-bold text-[oklch(0.75_0.15_85)] mb-2">
-                  +4M
+                <div className="text-3xl sm:text-4xl font-bold text-[oklch(0.75_0.15_85)] mb-2">
+                  2.1M
                 </div>
-                <div className="text-sm text-[oklch(0.65_0.03_85)] font-light">
+                <div className="text-xs sm:text-sm text-[oklch(0.65_0.03_85)] font-light">
                   {content.kpi2}
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-4xl sm:text-5xl font-bold text-[oklch(0.75_0.15_85)] mb-2">
+                <div className="text-3xl sm:text-4xl font-bold text-[oklch(0.75_0.15_85)] mb-2">
+                  €120K+
+                </div>
+                <div className="text-xs sm:text-sm text-[oklch(0.65_0.03_85)] font-light">
+                  {content.kpi3}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl sm:text-4xl font-bold text-[oklch(0.75_0.15_85)] mb-2">
                   100%
                 </div>
-                <div className="text-sm text-[oklch(0.65_0.03_85)] font-light">
-                  {content.kpi3}
+                <div className="text-xs sm:text-sm text-[oklch(0.65_0.03_85)] font-light">
+                  {content.kpi4}
                 </div>
               </div>
             </div>
@@ -431,14 +441,11 @@ export default function Home() {
                   <p className="text-sm text-[oklch(0.55_0.03_85)] mb-4 font-light">
                     {content.case1Sub}
                   </p>
-                  <p className="text-[oklch(0.65_0.03_85)] mb-2 font-light">
-                    {content.case1Before}
+                  <p className="text-xl font-bold text-[oklch(0.75_0.15_85)] mb-2">
+                    {content.case1Metric1}
                   </p>
-                  <p className="text-[oklch(0.75_0.15_85)] font-semibold mb-2">
-                    {content.case1After}
-                  </p>
-                  <p className="text-2xl font-bold text-[oklch(0.75_0.15_85)] mb-3">
-                    {content.case1Growth}
+                  <p className="text-lg text-[oklch(0.65_0.03_85)] mb-3 font-light">
+                    {content.case1Metric2}
                   </p>
                   <p className="text-sm text-[oklch(0.55_0.03_85)] font-light">
                     {content.case1Note}
@@ -541,10 +548,10 @@ export default function Home() {
                   <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-[oklch(0.85_0.15_85)]">
                     {content.case2Title}
                   </h3>
-                  <p className="text-[oklch(0.75_0.15_85)] font-semibold mb-2">
+                  <p className="text-xl font-bold text-[oklch(0.75_0.15_85)] mb-2">
                     {content.case2Metric1}
                   </p>
-                  <p className="text-2xl font-bold text-[oklch(0.75_0.15_85)] mb-3">
+                  <p className="text-lg text-[oklch(0.65_0.03_85)] mb-3 font-light">
                     {content.case2Metric2}
                   </p>
                   <p className="text-sm text-[oklch(0.55_0.03_85)] font-light">
@@ -564,8 +571,11 @@ export default function Home() {
                   <h3 className="text-2xl sm:text-3xl font-bold mb-4 text-[oklch(0.85_0.15_85)]">
                     {content.case3Title}
                   </h3>
-                  <p className="text-[oklch(0.75_0.15_85)] font-semibold mb-3">
+                  <p className="text-xl font-bold text-[oklch(0.75_0.15_85)] mb-2">
                     {content.case3Metric1}
+                  </p>
+                  <p className="text-lg text-[oklch(0.65_0.03_85)] mb-3 font-light">
+                    {content.case3Metric2}
                   </p>
                   <p className="text-sm text-[oklch(0.55_0.03_85)] font-light">
                     {content.case3Note}
