@@ -97,15 +97,15 @@ export default function Home() {
       businessId: "Business ID: 3469822-4",
       links: "Links",
       privacy: "Privacy Policy",
-      legalNotice: "Legal Compliance Notice",
-      legalText: "All activities conducted in full compliance with Finnish gambling legislation (Arpajaislaki 1047/2001 and subsequent amendments). No violations of Finnish gambling laws at any stage. All content produced adheres to responsible gaming principles and applicable regulatory frameworks.",
+      legalNotice: "Compliance",
+      legalText: "All activities conducted in full compliance with Finnish gambling legislation. No violations at any stage.",
       gdpr: "GDPR & responsible marketing compliant",
       copyright: "© 2026 Matilda Media. All rights reserved.",
     },
     fi: {
       hero1: "Suomi avautuu 2027.",
       hero2: "Yleisö rakennetaan nyt.",
-      heroSub: "Matilda Media auttaa kansainvälisiä iGaming-operaattoreita rakentamaan orgaanista auktoriteettia Suomessa ennen sääntelyn muutosta. Paikallinen kulttuuri. Alustakohtaiset algoritmit. Compliance-fokus.",
+      heroSub: "Matilda Media auttaa kansainvälisiä iGaming-operaattoreita rakentamaan orgaanista auktoriteettia Suomessa ennen sääntelyn muutosta. Paikallinen kulttuuri. Alustakohtaiset algoritmit (TikTok, YouTube, Facebook, Instagram, X, Snapchat). Compliance-fokus.",
       ctaPrimary: "Varaa strateginen markkinoille tulopuhelu",
       ctaSecondary: "Katso markkinavaikutus",
       kpi1: "orgaanista näyttökertaa toimitettu",
@@ -119,14 +119,14 @@ export default function Home() {
       pillar2Title: "Compliance-valmis sisältö",
       pillar2Desc: "Rakennettu sääntelytietoisuudella ja vastuullisen pelaamisen periaatteilla alusta alkaen.",
       pillar3Title: "Orgaaninen jakelumoottori",
-      pillar3Desc: "Algoritmiystävälliset lyhytmuotoiset ja podcast-ekosysteemit, jotka skaalautuvat ilman maksettua hankintariippuvuutta.",
+      pillar3Desc: "Algoritmiystävälliset lyhytvideot (TikTok, YouTube Shorts, Instagram Reels, Facebook, X, Snapchat), jotka skaalautuvat ilman maksettua hankintariippuvuutta.",
       pillar4Title: "Raportointi & ROI-älykkyys",
       pillar4Desc: "Tiedä mikä ajaa talletuksia — ei vain katselukertoja. Läpinäkyvä analytiikka ja kuukausittaiset suorituskykyarvioinnit.",
       packagesTitle: "Strateginen kumppanuus",
       packagesSub: "Täysin räätälöity markkinoille tulototeutus. Ei malleja. Ei rajoja.",
       packageMain: "Taivas on rajana",
       packageDesc: "Jokaisen operaattorin markkinoille tulo on ainutlaatuinen. Rakennamme strategiasi alusta alkaen — räätälöitynä brändillesi, aikataulullesi ja sääntelyympäristöllesi.",
-      packageFeatures: ["End-to-end sisältö- & jakelustrategia", "Compliance-yhteensopiva toteutus alusta alkaen", "Oma strateginen johtaja", "Täysi podcast-tuotanto + lyhytmuotoinen vahvistus", "Monialustainen orgaaninen dominanssi", "Markkinasiirtymän roadmap 2027:ään", "Kuukausittaiset suorituskykyarvioinnit & ROI-älykkyys"],
+      packageFeatures: ["End-to-end sisältö- & jakelustrategia", "Compliance-yhteensopiva toteutus alusta alkaen", "Oma strateginen johtaja", "Täysi videotuotanto + monialustainen jakelu", "Monialustainen orgaaninen dominanssi (TikTok, YouTube, Instagram, Facebook, X, Snapchat)", "Markkinasiirtymän roadmap 2027:ään", "Kuukausittaiset suorituskykyarvioinnit & ROI-älykkyys"],
       packageGuarantee: "Tulostakuu",
       packageGuaranteeDesc: "Seisomme työmme takana. Jos emme toimita mitattavaa orgaanista kasvua 90 päivän kuluessa, työskentelemme ilmaiseksi kunnes teemme.",
       ctaProposal: "Pyydä räätälöity ehdotus",
@@ -159,8 +159,8 @@ export default function Home() {
       businessId: "Y-tunnus: 3469822-4",
       links: "Linkit",
       privacy: "Tietosuojakäytäntö",
-      legalNotice: "Lakisääteinen vaatimustenmukaisuusilmoitus",
-      legalText: "Kaikki toiminta suoritetaan täysin Suomen rahapelihallinnon mukaisesti (Arpajaislaki 1047/2001 ja myöhemmät muutokset). Suomen rahapelihallintoa ei ole rikottu missään vaiheessa. Kaikki tuotettu sisältö noudattaa vastuullisen pelaamisen periaatteita ja sovellettavia sääntelykehyksiä.",
+      legalNotice: "Vaatimustenmukaisuus",
+      legalText: "Kaikki toiminta suoritetaan täysin Suomen rahapelihallinnon mukaisesti. Ei rikkomuksia missään vaiheessa.",
       gdpr: "GDPR- ja vastuullinen markkinointi -yhteensopiva",
       copyright: "© 2026 Matilda Media. Kaikki oikeudet pidätetään.",
     }
@@ -446,12 +446,14 @@ export default function Home() {
                 </div>
                 <div className="bg-[oklch(0.06_0.01_250)] rounded-lg p-8 border border-[oklch(0.75_0.15_85)]/10 min-h-[300px] flex flex-col justify-center">
                   {/* Blurred Green Logo (Unibet-style) */}
-                  <div className="mb-8 flex justify-center">
-                    <div className="w-32 h-32 rounded-2xl" style={{
+                  <div className="mb-8 flex justify-center relative">
+                    <div className="w-32 h-32 rounded-2xl relative" style={{
                       background: 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)',
                       filter: 'blur(12px)',
                       opacity: 0.4
-                    }}></div>
+                    }}>
+                      <div className="absolute inset-0 flex items-center justify-center text-6xl font-bold text-white" style={{ filter: 'blur(2px)' }}>U</div>
+                    </div>
                   </div>
                   {/* Performance Meters */}
                   <div className="space-y-4">
@@ -492,12 +494,14 @@ export default function Home() {
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="order-2 md:order-1 bg-[oklch(0.06_0.01_250)] rounded-lg p-8 border border-[oklch(0.75_0.15_85)]/10 min-h-[300px] flex flex-col justify-center">
                   {/* Blurred Red Logo (Bet365-style) */}
-                  <div className="mb-8 flex justify-center">
-                    <div className="w-32 h-32 rounded-2xl" style={{
+                  <div className="mb-8 flex justify-center relative">
+                    <div className="w-32 h-32 rounded-2xl relative" style={{
                       background: 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)',
                       filter: 'blur(12px)',
                       opacity: 0.4
-                    }}></div>
+                    }}>
+                      <div className="absolute inset-0 flex items-center justify-center text-5xl font-bold text-white" style={{ filter: 'blur(2px)' }}>B</div>
+                    </div>
                   </div>
                   {/* Performance Meters */}
                   <div className="space-y-4">
@@ -569,12 +573,14 @@ export default function Home() {
                 </div>
                 <div className="bg-[oklch(0.06_0.01_250)] rounded-lg p-8 border border-[oklch(0.75_0.15_85)]/10 min-h-[300px] flex flex-col justify-center">
                   {/* Blurred Blue Logo (888-style) */}
-                  <div className="mb-8 flex justify-center">
-                    <div className="w-32 h-32 rounded-2xl" style={{
+                  <div className="mb-8 flex justify-center relative">
+                    <div className="w-32 h-32 rounded-2xl relative" style={{
                       background: 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)',
                       filter: 'blur(12px)',
                       opacity: 0.4
-                    }}></div>
+                    }}>
+                      <div className="absolute inset-0 flex items-center justify-center text-6xl font-bold text-white" style={{ filter: 'blur(2px)' }}>8</div>
+                    </div>
                   </div>
                   {/* Performance Meters */}
                   <div className="space-y-4">
