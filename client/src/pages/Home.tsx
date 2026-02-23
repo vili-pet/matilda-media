@@ -444,10 +444,45 @@ export default function Home() {
                     {content.case1Note}
                   </p>
                 </div>
-                <div className="bg-[oklch(0.06_0.01_250)] rounded-lg p-8 border border-[oklch(0.75_0.15_85)]/10 flex items-center justify-center min-h-[300px]">
-                  <p className="text-[oklch(0.45_0.03_85)] text-center text-sm">
-                    [Performance visualization]
-                  </p>
+                <div className="bg-[oklch(0.06_0.01_250)] rounded-lg p-8 border border-[oklch(0.75_0.15_85)]/10 min-h-[300px] flex flex-col justify-center">
+                  {/* Blurred Green Logo (Unibet-style) */}
+                  <div className="mb-8 flex justify-center">
+                    <div className="w-32 h-32 rounded-2xl" style={{
+                      background: 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)',
+                      filter: 'blur(12px)',
+                      opacity: 0.4
+                    }}></div>
+                  </div>
+                  {/* Performance Meters */}
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-xs text-[oklch(0.65_0.03_85)] mb-1">
+                        <span>Engagement Rate</span>
+                        <span>13.7%</span>
+                      </div>
+                      <div className="h-2 bg-[oklch(0.15_0.02_250)] rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-[oklch(0.75_0.15_85)] to-[oklch(0.65_0.15_85)]" style={{ width: '85%' }}></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs text-[oklch(0.65_0.03_85)] mb-1">
+                        <span>Follower Growth</span>
+                        <span>+520%</span>
+                      </div>
+                      <div className="h-2 bg-[oklch(0.15_0.02_250)] rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-[oklch(0.75_0.15_85)] to-[oklch(0.65_0.15_85)]" style={{ width: '95%' }}></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs text-[oklch(0.65_0.03_85)] mb-1">
+                        <span>Organic Reach</span>
+                        <span>100%</span>
+                      </div>
+                      <div className="h-2 bg-[oklch(0.15_0.02_250)] rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-[oklch(0.75_0.15_85)] to-[oklch(0.65_0.15_85)]" style={{ width: '100%' }}></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </Card>
@@ -455,10 +490,45 @@ export default function Home() {
             {/* Case 2 */}
             <Card className="bg-[oklch(0.10_0.02_250)] border-[oklch(0.75_0.15_85)]/10 p-8 sm:p-10">
               <div className="grid md:grid-cols-2 gap-8 items-center">
-                <div className="order-2 md:order-1 bg-[oklch(0.06_0.01_250)] rounded-lg p-8 border border-[oklch(0.75_0.15_85)]/10 flex items-center justify-center min-h-[300px]">
-                  <p className="text-[oklch(0.45_0.03_85)] text-center text-sm">
-                    [Performance visualization]
-                  </p>
+                <div className="order-2 md:order-1 bg-[oklch(0.06_0.01_250)] rounded-lg p-8 border border-[oklch(0.75_0.15_85)]/10 min-h-[300px] flex flex-col justify-center">
+                  {/* Blurred Red Logo (Bet365-style) */}
+                  <div className="mb-8 flex justify-center">
+                    <div className="w-32 h-32 rounded-2xl" style={{
+                      background: 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)',
+                      filter: 'blur(12px)',
+                      opacity: 0.4
+                    }}></div>
+                  </div>
+                  {/* Performance Meters */}
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-xs text-[oklch(0.65_0.03_85)] mb-1">
+                        <span>Impressions</span>
+                        <span>1.2M</span>
+                      </div>
+                      <div className="h-2 bg-[oklch(0.15_0.02_250)] rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-[oklch(0.75_0.15_85)] to-[oklch(0.65_0.15_85)]" style={{ width: '92%' }}></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs text-[oklch(0.65_0.03_85)] mb-1">
+                        <span>ROI</span>
+                        <span>8.4x</span>
+                      </div>
+                      <div className="h-2 bg-[oklch(0.15_0.02_250)] rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-[oklch(0.75_0.15_85)] to-[oklch(0.65_0.15_85)]" style={{ width: '88%' }}></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs text-[oklch(0.65_0.03_85)] mb-1">
+                        <span>Paid Media</span>
+                        <span>0%</span>
+                      </div>
+                      <div className="h-2 bg-[oklch(0.15_0.02_250)] rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-[oklch(0.55_0.15_85)] to-[oklch(0.45_0.15_85)]" style={{ width: '0%' }}></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div className="order-1 md:order-2">
                   <div className="inline-block bg-[oklch(0.75_0.15_85)]/10 text-[oklch(0.75_0.15_85)] text-xs font-bold px-3 py-1 rounded-full mb-4">
@@ -497,10 +567,45 @@ export default function Home() {
                     {content.case3Note}
                   </p>
                 </div>
-                <div className="bg-[oklch(0.06_0.01_250)] rounded-lg p-8 border border-[oklch(0.75_0.15_85)]/10 flex items-center justify-center min-h-[300px]">
-                  <p className="text-[oklch(0.45_0.03_85)] text-center text-sm">
-                    [Performance visualization]
-                  </p>
+                <div className="bg-[oklch(0.06_0.01_250)] rounded-lg p-8 border border-[oklch(0.75_0.15_85)]/10 min-h-[300px] flex flex-col justify-center">
+                  {/* Blurred Blue Logo (888-style) */}
+                  <div className="mb-8 flex justify-center">
+                    <div className="w-32 h-32 rounded-2xl" style={{
+                      background: 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)',
+                      filter: 'blur(12px)',
+                      opacity: 0.4
+                    }}></div>
+                  </div>
+                  {/* Performance Meters */}
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-xs text-[oklch(0.65_0.03_85)] mb-1">
+                        <span>TikTok Views</span>
+                        <span>430K</span>
+                      </div>
+                      <div className="h-2 bg-[oklch(0.15_0.02_250)] rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-[oklch(0.75_0.15_85)] to-[oklch(0.65_0.15_85)]" style={{ width: '78%' }}></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs text-[oklch(0.65_0.03_85)] mb-1">
+                        <span>Pre-2027 Positioning</span>
+                        <span>Active</span>
+                      </div>
+                      <div className="h-2 bg-[oklch(0.15_0.02_250)] rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-[oklch(0.75_0.15_85)] to-[oklch(0.65_0.15_85)]" style={{ width: '100%' }}></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs text-[oklch(0.65_0.03_85)] mb-1">
+                        <span>Paid Advertising</span>
+                        <span>0%</span>
+                      </div>
+                      <div className="h-2 bg-[oklch(0.15_0.02_250)] rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-[oklch(0.55_0.15_85)] to-[oklch(0.45_0.15_85)]" style={{ width: '0%' }}></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </Card>
